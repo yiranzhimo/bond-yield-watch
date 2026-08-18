@@ -1,10 +1,30 @@
 {
-  "generated_at": "2026-08-18T09:39:55.378550+00:00",
+  "generated_at": "2026-08-18T13:10:14.978539+00:00",
   "rules": {
-    "daily_bp": 10.0,
-    "weekly_bp": 25.0,
-    "spread_daily_bp": 10.0,
-    "inversion_watch_bp": 0.0
+    "sigma_window_days": 60,
+    "daily_sigma": 2.0,
+    "daily_sigma_high": 3.0,
+    "weekly_sigma": 2.5,
+    "spread_daily_sigma": 2.0,
+    "min_daily_bp": 2.0,
+    "min_weekly_bp": 5.0,
+    "abs_daily_bp": 15.0,
+    "abs_weekly_bp": 35.0,
+    "inversion_watch_bp": 0.0,
+    "stale_warn_days": 4,
+    "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "daily_move",
+      "metric": "JP 2Y",
+      "value_bp": 3.9,
+      "sigma_bp": 1.81,
+      "sigma_multiple": 2.2,
+      "trigger": "sigma",
+      "message": "日本国债 2Y 单日上行 3.9bp（2.2σ），至 1.696%"
+    }
+  ]
 }

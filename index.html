@@ -53,7 +53,8 @@
               <li class="alert-empty">等待数据…</li>
             </ul>
             <p class="card-note">
-              触发条件：单期限单日 ±10bp、一周 ±25bp，跨国利差单日 ±10bp，或 10Y-2Y 倒挂。
+              触发条件按各市场自身波动率标准化：单日变动超过 2σ（一周 2.5σ）即告警，
+              另设绝对阈值兜底。三国日波动差近一个数量级，固定 bp 阈值会让中国永不触发、日本天天触发。
             </p>
           </div>
         </section>
@@ -69,11 +70,18 @@
               <em data-role="ten-chg">—</em>
             </div>
             <div class="curve-wrap">
-              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="中国国债收益率曲线">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="中国国债收益率曲线，含一月前与一年前对比">
+                <polyline data-role="curve-1y" class="curve-line curve-line--1y" points="" />
+                <polyline data-role="curve-1m" class="curve-line curve-line--1m" points="" />
                 <polyline data-role="curve-line" class="curve-line" points="" />
                 <g data-role="curve-dots"></g>
               </svg>
               <div class="curve-axis" data-role="curve-axis"></div>
+              <div class="curve-legend">
+                <span class="legend-now">当前</span>
+                <span class="legend-1m">一月前</span>
+                <span class="legend-1y">一年前</span>
+              </div>
             </div>
             <dl class="stat-rows" data-role="stats"></dl>
           </article>
@@ -88,11 +96,18 @@
               <em data-role="ten-chg">—</em>
             </div>
             <div class="curve-wrap">
-              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="美国国债收益率曲线">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="美国国债收益率曲线，含一月前与一年前对比">
+                <polyline data-role="curve-1y" class="curve-line curve-line--1y" points="" />
+                <polyline data-role="curve-1m" class="curve-line curve-line--1m" points="" />
                 <polyline data-role="curve-line" class="curve-line" points="" />
                 <g data-role="curve-dots"></g>
               </svg>
               <div class="curve-axis" data-role="curve-axis"></div>
+              <div class="curve-legend">
+                <span class="legend-now">当前</span>
+                <span class="legend-1m">一月前</span>
+                <span class="legend-1y">一年前</span>
+              </div>
             </div>
             <dl class="stat-rows" data-role="stats"></dl>
           </article>
@@ -107,11 +122,18 @@
               <em data-role="ten-chg">—</em>
             </div>
             <div class="curve-wrap">
-              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="日本国债收益率曲线">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="日本国债收益率曲线，含一月前与一年前对比">
+                <polyline data-role="curve-1y" class="curve-line curve-line--1y" points="" />
+                <polyline data-role="curve-1m" class="curve-line curve-line--1m" points="" />
                 <polyline data-role="curve-line" class="curve-line" points="" />
                 <g data-role="curve-dots"></g>
               </svg>
               <div class="curve-axis" data-role="curve-axis"></div>
+              <div class="curve-legend">
+                <span class="legend-now">当前</span>
+                <span class="legend-1m">一月前</span>
+                <span class="legend-1y">一年前</span>
+              </div>
             </div>
             <dl class="stat-rows" data-role="stats"></dl>
           </article>
@@ -125,10 +147,46 @@
           <div id="spread-grid" class="spread-grid"></div>
         </section>
 
+        <section class="panel" aria-labelledby="trend-title">
+          <div class="panel-heading">
+            <h2 id="trend-title">走势</h2>
+            <p>过去两年的 10Y 收益率与跨国利差路径。曲线怎么移动，比某一天的截面更能说明问题。</p>
+          </div>
+          <div class="trend-grid">
+            <figure class="trend-figure">
+              <figcaption>三国 10Y 收益率</figcaption>
+              <svg
+                id="trend-yields"
+                class="trend-chart"
+                viewBox="0 0 720 260"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label="中美日 10 年期国债收益率两年走势"
+              ></svg>
+              <div id="trend-yields-legend" class="trend-legend"></div>
+            </figure>
+            <figure class="trend-figure">
+              <figcaption>跨国利差（bp）</figcaption>
+              <svg
+                id="trend-spreads"
+                class="trend-chart"
+                viewBox="0 0 720 260"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label="跨国国债利差两年走势"
+              ></svg>
+              <div id="trend-spreads-legend" class="trend-legend"></div>
+            </figure>
+          </div>
+        </section>
+
         <section class="panel" aria-labelledby="table-title">
           <div class="panel-heading">
             <h2 id="table-title">期限明细</h2>
-            <p>各期限收益率、变动与两年分位。变动单位为基点（bp）。</p>
+            <p>
+              各期限收益率、变动、日波动率与两年分位。变动单位为基点（bp）。
+              日σ 是该期限过去 60 个交易日日变动的标准差，也是告警的标尺。
+            </p>
           </div>
           <div class="table-scroll">
             <table class="detail-table">
@@ -142,6 +200,7 @@
                   <th scope="col">1月</th>
                   <th scope="col">3月</th>
                   <th scope="col">1年</th>
+                  <th scope="col" title="过去 60 个交易日日变动的标准差">日σ</th>
                   <th scope="col">2年分位</th>
                 </tr>
               </thead>

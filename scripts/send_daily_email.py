@@ -146,6 +146,12 @@ def render_html(data: Dict[str, Any], site_url: str) -> str:
               &nbsp;{html.escape(str(a.get('message', '')))}</li>"""
             for a in alerts[:10]
         )
+        # Name the yardstick, since the same bp move means different things in
+        # each market and the sigma multiple in each line is what ranks them.
+        items += (
+            "<li style='margin-top:8px;font-size:11px;color:#6d706b;list-style:none;'>"
+            "σ 为该期限过去 60 个交易日日变动的标准差</li>"
+        )
         alert_block = f"""
       <div style="background:#faf4ec;border-left:3px solid #b57a21;padding:14px 16px;margin-bottom:22px;">
         <div style="font-size:12px;letter-spacing:.08em;color:#6d706b;margin-bottom:8px;">异动告警</div>
@@ -164,9 +170,15 @@ def render_html(data: Dict[str, Any], site_url: str) -> str:
     quality = data.get("data_quality") or {}
     quality_note = ""
     if quality.get("status") != "ok":
-        failures = html.escape("；".join(quality.get("failures", [])))
+        stale = [a for a in alerts if a.get("kind") == "stale_data"]
+        notes = list(quality.get("failures", []))
+        # Name staleness first: it is the case where every fetch succeeded and
+        # the numbers still stopped moving, which no failure string would show.
+        if stale:
+            notes = [str(a.get("message", "")) for a in stale] + notes
         quality_note = (
-            f"<p style='font-size:12px;color:#b57a21;margin:0 0 14px;'>数据源降级：{failures}</p>"
+            "<p style='font-size:12px;color:#b57a21;margin:0 0 14px;'>数据质量警示："
+            f"{html.escape('；'.join(notes))}</p>"
         )
 
     return f"""<!doctype html>
@@ -220,6 +232,7 @@ def render_text(data: Dict[str, Any], site_url: str) -> str:
                 f"  {tenor:>3} {pct(info.get('yield')):>9}"
                 f"  1日 {signed_bp(info.get('change_1d_bp')):>9}"
                 f"  1周 {signed_bp(info.get('change_1w_bp')):>9}"
+                f"  日σ {plain_bp(info.get('daily_sigma_bp')):>7}"
             )
         lines.append("")
     lines.append("跨国利差：")
@@ -267,6 +280,9 @@ def main() -> int:
     body_text = render_text(data, site_url)
 
     if args.only_on_alert and not (data.get("alerts") or []):
+        # An empty alert list here means the pipeline ran and found a quiet
+        # market. A broken pipeline shows up as a stale_data alert instead, so
+        # it still gets delivered rather than being mistaken for a calm day.
         print("No alerts today; skipping email as requested.")
         return 0
 

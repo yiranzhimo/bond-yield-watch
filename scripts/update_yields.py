@@ -99,19 +99,51 @@ MARKET_META = {
     },
 }
 
-# Alert thresholds, in basis points. A 10Y move of ±10bp in one day is a
-# genuine repricing in any of these three markets; ±25bp over a week likewise.
+# Alerts fire on moves that are unusual *for that market*, not on a single
+# basis-point number applied to all three. The three markets differ by an order
+# of magnitude in daily volatility - China's 10Y often moves under 1bp a day
+# while Japan's runs several bp - so a shared absolute threshold makes the China
+# leg silent and the Japan leg constant noise. Each move is therefore divided by
+# the trailing standard deviation of that series' own daily changes.
+#
+# Absolute floors keep a quiet market from alerting on statistical trivia (a
+# 2-sigma move is meaningless if sigma is 0.3bp), and absolute ceilings still
+# fire when a move is large in outright terms no matter how volatile the market
+# has been.
 ALERT_RULES = {
-    "daily_bp": 10.0,
-    "weekly_bp": 25.0,
-    "spread_daily_bp": 10.0,
+    "sigma_window_days": 60,
+    "daily_sigma": 2.0,
+    "daily_sigma_high": 3.0,
+    "weekly_sigma": 2.5,
+    "spread_daily_sigma": 2.0,
+    "min_daily_bp": 2.0,
+    "min_weekly_bp": 5.0,
+    "abs_daily_bp": 15.0,
+    "abs_weekly_bp": 35.0,
     "inversion_watch_bp": 0.0,
+    # Staleness watch. Degrading to cached history keeps the dashboard readable
+    # when a source breaks, but it makes failure look like calm: the page still
+    # renders and the email still arrives, just with yesterday's numbers
+    # forever. These thresholds turn silent staleness into a visible alert.
+    "stale_warn_days": 4,
+    "stale_high_days": 8,
 }
 
 # Rolling window used to convert a level into a percentile. Two years of
 # business days keeps the score responsive without over-reacting to one month.
 PERCENTILE_WINDOW_DAYS = 504
 HISTORY_RETENTION_DAYS = 3650
+
+# A single-day jump beyond this is treated as an upstream data error rather than
+# a market move: no sovereign curve of these three repriced this hard in one
+# session outside of a redenomination. Bad data is worse than missing data
+# because it silently poisons percentiles and change calculations.
+SANITY_MAX_DAILY_BP = 100.0
+# Tolerance widens as sqrt(elapsed days) but never past this, so a genuinely
+# corrupt print cannot slip through just because it follows a long gap.
+SANITY_MAX_GAP_JUMP_BP = 400.0
+SANITY_MIN_YIELD = -2.0
+SANITY_MAX_YIELD = 25.0
 
 MAX_RETRIES = 3
 RETRY_SLEEP_SECONDS = 3.0
@@ -188,7 +220,12 @@ Series = Dict[str, Dict[str, float]]
 
 
 def fetch_eastmoney(max_pages: int = 20, page_size: int = 500) -> Dict[str, Series]:
-    """China + United States curves from the Eastmoney datacenter feed."""
+    """China + United States curves from the Eastmoney datacenter feed.
+
+    ``max_pages`` bounds the walk backwards through history. Daily runs only
+    need the newest page because everything older already sits in the committed
+    history; the full walk is reserved for a cold start or a detected gap.
+    """
     out: Dict[str, Series] = {"CN": {}, "US": {}}
     guard_rows: List[Dict[str, Any]] = []
     pages_seen = 0
@@ -262,15 +299,22 @@ def validate_eastmoney_mapping(rows: Sequence[Dict[str, Any]]) -> None:
         log(f"Mapping guard for {market}: {matched}/{checked} rows consistent")
 
 
-def fetch_mof_japan() -> Series:
+def fetch_mof_japan(include_history: bool = True) -> Series:
     """JGB curve from MOF: long history overlaid with the current month.
 
     The history file is authoritative for old dates but trails the calendar, so
-    the current-month file is applied last and wins on any overlap.
+    the current-month file is applied last and wins on any overlap. Daily runs
+    pass ``include_history=False`` and fetch only the small current-month file,
+    skipping a 1.2 MB download whose contents are already in the cache.
     """
     out: Series = {}
     errors: List[str] = []
-    for label, url in (("history", MOF_HISTORY_URL), ("current", MOF_CURRENT_URL)):
+    sources = (
+        (("history", MOF_HISTORY_URL), ("current", MOF_CURRENT_URL))
+        if include_history
+        else (("current", MOF_CURRENT_URL),)
+    )
+    for label, url in sources:
         try:
             partial = parse_mof_csv(fetch_bytes(url))
         except Exception as exc:  # noqa: BLE001 - one file may lag or move
@@ -331,11 +375,18 @@ def parse_mof_date(text: str) -> Optional[str]:
         return None
 
 
-def fetch_fred() -> Series:
-    """US constant-maturity yields straight from FRED, one CSV per tenor."""
+def fetch_fred(since: Optional[str] = None) -> Series:
+    """US constant-maturity yields straight from FRED, one CSV per tenor.
+
+    ``since`` trims the request server-side via ``cosd``, so a daily run pulls a
+    handful of rows instead of the full series back to 1962.
+    """
     out: Series = {}
     for tenor, series in FRED_SERIES.items():
-        raw = fetch_bytes(FRED_URL.format(series=series), browser_ua=False)
+        url = FRED_URL.format(series=series)
+        if since:
+            url = f"{url}&cosd={since}"
+        raw = fetch_bytes(url, browser_ua=False)
         reader = csv.reader(io.StringIO(raw.decode("utf-8-sig", errors="replace")))
         rows = list(reader)
         if not rows:
@@ -379,17 +430,81 @@ def load_history() -> Dict[str, Series]:
     return history
 
 
-def merge_series(base: Series, incoming: Series) -> Tuple[Series, int]:
-    """Overlay fresh observations onto the cache; returns (merged, new dates)."""
+def merge_series(
+    base: Series, incoming: Series, label: str = ""
+) -> Tuple[Series, int, List[str]]:
+    """Overlay fresh observations onto the cache, screening out bad values.
+
+    Returns (merged, count of new dates, rejection notes). Values that fail the
+    sanity screen are dropped rather than merged: a corrupt print would
+    otherwise persist in the committed history and skew every percentile and
+    change calculation derived from it.
+    """
     merged: Series = {stamp: dict(values) for stamp, values in base.items()}
     added = 0
-    for stamp, values in incoming.items():
+    rejected: List[str] = []
+
+    for stamp in sorted(incoming):
+        values = incoming[stamp]
+        clean: Dict[str, float] = {}
+        for tenor, value in values.items():
+            if not SANITY_MIN_YIELD <= value <= SANITY_MAX_YIELD:
+                rejected.append(f"{label}{stamp} {tenor}={value} 超出合理区间")
+                continue
+            # An exact zero is a feed sentinel, not a yield. It must be caught
+            # before the gap-scaled jump check, whose widened tolerance would
+            # otherwise wave it through after a weekend or holiday.
+            if value == 0.0:
+                rejected.append(f"{label}{stamp} {tenor}=0 视为缺失哨兵值")
+                continue
+            prior = nearest_prior_observation(merged, stamp, tenor)
+            if prior is not None:
+                prior_stamp, reference = prior
+                jump = abs(bp(value - reference) or 0.0)
+                # The budget grows with the gap: a value 200 days after the last
+                # print is not suspicious for moving 150bp. A flat per-jump cap
+                # rejected 1716 legitimate values from the sparse early history,
+                # where consecutive observations sat months apart.
+                gap_days = max(
+                    1, (date.fromisoformat(stamp) - date.fromisoformat(prior_stamp)).days
+                )
+                budget = min(
+                    SANITY_MAX_DAILY_BP * math.sqrt(gap_days), SANITY_MAX_GAP_JUMP_BP
+                )
+                if jump > budget:
+                    rejected.append(
+                        f"{label}{stamp} {tenor}={value} 相对 {prior_stamp} "
+                        f"跳变 {jump:.0f}bp（{gap_days} 天内上限 {budget:.0f}bp）"
+                    )
+                    continue
+            clean[tenor] = value
+        if not clean:
+            continue
         if stamp not in merged:
             added += 1
-            merged[stamp] = dict(values)
+            merged[stamp] = clean
         else:
-            merged[stamp].update(values)
-    return merged, added
+            merged[stamp].update(clean)
+    return merged, added, rejected
+
+
+def nearest_prior_observation(
+    series: Series, stamp: str, tenor: str
+) -> Optional[Tuple[str, float]]:
+    """Latest (date, value) strictly before ``stamp`` for one tenor, if any.
+
+    The date is returned alongside the value so the caller can size its
+    tolerance by how much time actually elapsed.
+    """
+    candidates = [
+        other
+        for other, values in series.items()
+        if other < stamp and values.get(tenor) is not None
+    ]
+    if not candidates:
+        return None
+    chosen = max(candidates)
+    return chosen, series[chosen][tenor]
 
 
 def write_history(history: Dict[str, Series]) -> None:
@@ -456,6 +571,78 @@ def change_bp(series: Series, tenor: str, days: int) -> Optional[float]:
     return bp(current - previous)
 
 
+def last_gap_days(series: Series, tenor: str) -> Optional[int]:
+    """Calendar days spanned by the most recent observation-to-observation step.
+
+    The "1 day" change compares consecutive *observations*, so after a holiday
+    week it really spans several days. Surfacing the true gap keeps the label
+    honest instead of calling a 7-day move a daily one.
+    """
+    dates = sorted_dates(series, tenor)
+    if len(dates) < 2:
+        return None
+    return (date.fromisoformat(dates[-1]) - date.fromisoformat(dates[-2])).days
+
+
+def change_sigma(
+    series: Series,
+    tenor: str,
+    step: int = 1,
+    window: Optional[int] = None,
+) -> Optional[float]:
+    """Standard deviation of recent ``step``-observation changes, in basis points.
+
+    This is what makes a move comparable across markets: 3bp is a big day for
+    Chinese government bonds and a quiet one for JGBs right now, and dividing by
+    each market's own sigma puts them on the same footing.
+
+    ``step`` is measured in observations, so weekly volatility is sampled
+    directly from realised 5-observation changes rather than scaled from the
+    daily figure by sqrt(5). That scaling assumes successive days are
+    independent, which fails in a trending market - JGB yields are up 134bp over
+    a year - and understates weekly volatility whenever moves autocorrelate,
+    making a nominal "2.5 sigma" weekly trigger fire more often than intended.
+
+    ``window`` defaults to ALERT_RULES at call time rather than at import, so
+    tuning the rules dict actually takes effect.
+    """
+    if step < 1:
+        return None
+    if window is None:
+        window = ALERT_RULES["sigma_window_days"]
+
+    dates = sorted_dates(series, tenor)
+    if len(dates) < max(12, step + 2):
+        return None
+    recent = dates[-(window + step):]
+    diffs: List[float] = []
+    for earlier, later in zip(recent, recent[step:]):
+        left = value_on(series, earlier, tenor)
+        right = value_on(series, later, tenor)
+        if left is None or right is None:
+            continue
+        move = bp(right - left)
+        if move is not None:
+            diffs.append(move)
+    if len(diffs) < 10:
+        return None
+    try:
+        sigma = statistics.stdev(diffs)
+    except statistics.StatisticsError:
+        return None
+    return None if sigma <= 0 else round(sigma, 2)
+
+
+def daily_change_sigma(series: Series, tenor: str) -> Optional[float]:
+    """Daily-change volatility, in basis points."""
+    return change_sigma(series, tenor, step=1)
+
+
+def weekly_change_sigma(series: Series, tenor: str) -> Optional[float]:
+    """Weekly-change volatility measured over 5 observations, in basis points."""
+    return change_sigma(series, tenor, step=5)
+
+
 def percentile_rank(series: Series, tenor: str, window: int = PERCENTILE_WINDOW_DAYS) -> Optional[float]:
     """Where the latest level sits inside its own trailing distribution."""
     dates = sorted_dates(series, tenor)
@@ -490,6 +677,9 @@ def curve_snapshot(series: Series) -> Dict[str, Any]:
             "change_3m_bp": change_bp(series, tenor, 91),
             "change_1y_bp": change_bp(series, tenor, 365),
             "percentile_2y": percentile_rank(series, tenor),
+            "daily_sigma_bp": daily_change_sigma(series, tenor),
+            "weekly_sigma_bp": weekly_change_sigma(series, tenor),
+            "last_gap_days": last_gap_days(series, tenor),
         }
 
     def level(tenor: str) -> Optional[float]:
@@ -508,6 +698,8 @@ def curve_snapshot(series: Series) -> Dict[str, Any]:
     return {
         "as_of": latest,
         "tenors": tenors,
+        "history_curves": historical_curves(series, latest),
+        "ten_year_history": tenor_series_points(series, "10Y"),
         "term_structure": {
             "spread_10y_2y_bp": spread_10_2,
             "spread_30y_10y_bp": spread_30_10,
@@ -516,6 +708,41 @@ def curve_snapshot(series: Series) -> Dict[str, Any]:
             "inverted": bool(spread_10_2 is not None and spread_10_2 < 0),
         },
     }
+
+
+def historical_curves(series: Series, latest: Optional[str]) -> Dict[str, Any]:
+    """The curve as it stood a month and a year ago, for overlay comparison.
+
+    Reading how the whole curve shifted is what bond analysis actually turns on -
+    a parallel shift, a steepening and a twist can all leave the 10Y unchanged.
+    """
+    out: Dict[str, Any] = {}
+    if not latest:
+        return out
+    for key, days in (("1m", 30), ("1y", 365)):
+        target = (date.fromisoformat(latest) - timedelta(days=days)).isoformat()
+        curve: Dict[str, Optional[float]] = {}
+        stamps: List[str] = []
+        for tenor in TENORS:
+            dates = sorted_dates(series, tenor)
+            chosen: Optional[str] = None
+            for stamp in dates:
+                if stamp <= target:
+                    chosen = stamp
+                else:
+                    break
+            curve[tenor] = round_or_none(value_on(series, chosen, tenor)) if chosen else None
+            if chosen:
+                stamps.append(chosen)
+        if any(value is not None for value in curve.values()):
+            out[key] = {"as_of": max(stamps) if stamps else None, "tenors": curve}
+    return out
+
+
+def tenor_series_points(series: Series, tenor: str, limit: int = 520) -> List[List[Any]]:
+    """Compact [date, yield] pairs so the page can chart one tenor's path."""
+    dates = sorted_dates(series, tenor)[-limit:]
+    return [[stamp, round_or_none(value_on(series, stamp, tenor))] for stamp in dates]
 
 
 def curve_shape(spread_10_2: Optional[float], spread_30_10: Optional[float]) -> str:
@@ -570,14 +797,118 @@ def cross_market_spreads(history: Dict[str, Series]) -> Dict[str, Any]:
             "change_1m_bp": change_bp(series, tenor, 30),
             "change_1y_bp": change_bp(series, tenor, 365),
             "percentile_2y": percentile_rank(series, tenor),
+            "daily_sigma_bp": daily_change_sigma(series, tenor),
+            "history": spread_series_points(series, tenor),
         }
     return out
+
+
+def spread_series_points(series: Series, tenor: str, limit: int = 520) -> List[List[Any]]:
+    """Compact [date, bp] pairs for charting a spread's recent path."""
+    dates = sorted_dates(series, tenor)[-limit:]
+    points: List[List[Any]] = []
+    for stamp in dates:
+        value = bp(value_on(series, stamp, tenor))
+        if value is not None:
+            points.append([stamp, value])
+    return points
+
+
+def judge_move(
+    move_bp: Optional[float],
+    sigma_bp: Optional[float],
+    *,
+    sigma_threshold: float,
+    floor_bp: float,
+    ceiling_bp: float,
+    high_sigma: Optional[float],
+) -> Optional[Dict[str, Any]]:
+    """Decide whether one move deserves an alert, and how loud.
+
+    Two independent paths can trigger: the move is large relative to the
+    market's own recent volatility (and clears an absolute floor, so a
+    near-motionless market does not alert on statistical noise), or the move is
+    simply large outright regardless of volatility. Returns None when neither
+    applies.
+    """
+    move = finite(move_bp)
+    if move is None:
+        return None
+    magnitude = abs(move)
+
+    multiple: Optional[float] = None
+    sigma = finite(sigma_bp)
+    if sigma and sigma > 0:
+        multiple = round(magnitude / sigma, 1)
+
+    by_sigma = (
+        multiple is not None and multiple >= sigma_threshold and magnitude >= floor_bp
+    )
+    by_absolute = magnitude >= ceiling_bp
+    if not (by_sigma or by_absolute):
+        return None
+
+    severity = "medium"
+    if by_absolute or (high_sigma is not None and multiple is not None and multiple >= high_sigma):
+        severity = "high"
+
+    if by_sigma and multiple is not None:
+        suffix = f"（{multiple:.1f}σ）"
+        trigger = "sigma"
+    else:
+        suffix = "（绝对阈值）"
+        trigger = "absolute"
+    if by_sigma and by_absolute and multiple is not None:
+        suffix = f"（{multiple:.1f}σ，超绝对阈值）"
+        trigger = "both"
+
+    return {"severity": severity, "multiple": multiple, "trigger": trigger, "suffix": suffix}
+
+
+def staleness_alert(
+    market: str, snapshot: Dict[str, Any], label: str, today: Optional[date] = None
+) -> Optional[Dict[str, Any]]:
+    """Alert when a market's newest observation has stopped advancing.
+
+    Without this the project cannot report its own failure: every source
+    degrades to cached history, so a broken upstream produces a page and an
+    email that look completely normal apart from a date that never moves.
+    Weekends and holidays are tolerated by the day thresholds.
+    """
+    as_of = snapshot.get("as_of")
+    if not as_of:
+        return {
+            "severity": "high",
+            "market": market,
+            "kind": "stale_data",
+            "metric": f"{market} 数据",
+            "value_bp": None,
+            "age_days": None,
+            "message": f"{label}没有任何可用观测,数据源可能已失效",
+        }
+
+    reference = today or datetime.now(timezone.utc).date()
+    age = (reference - date.fromisoformat(as_of)).days
+    if age < ALERT_RULES["stale_warn_days"]:
+        return None
+    return {
+        "severity": "high" if age >= ALERT_RULES["stale_high_days"] else "medium",
+        "market": market,
+        "kind": "stale_data",
+        "metric": f"{market} 数据",
+        "value_bp": None,
+        "age_days": age,
+        "message": (
+            f"{label}最新数据为 {as_of},已 {age} 天未更新,"
+            "疑似数据源中断而非市场休市"
+        ),
+    }
 
 
 def build_alerts(
     snapshots: Dict[str, Dict[str, Any]], spreads: Dict[str, Any]
 ) -> List[Dict[str, Any]]:
-    """Threshold breaches worth a human look, most severe first."""
+    """Moves that are unusual for their own market, most severe first."""
     alerts: List[Dict[str, Any]] = []
 
     for market in MARKETS:
@@ -585,38 +916,74 @@ def build_alerts(
         label = MARKET_META[market]["name_zh"]
         for tenor in TENORS:
             info = snapshot["tenors"][tenor]
+            sigma = info.get("daily_sigma_bp")
+
             daily = info.get("change_1d_bp")
-            weekly = info.get("change_1w_bp")
-            if daily is not None and abs(daily) >= ALERT_RULES["daily_bp"]:
+            verdict = judge_move(
+                daily,
+                sigma,
+                sigma_threshold=ALERT_RULES["daily_sigma"],
+                floor_bp=ALERT_RULES["min_daily_bp"],
+                ceiling_bp=ALERT_RULES["abs_daily_bp"],
+                high_sigma=ALERT_RULES["daily_sigma_high"],
+            )
+            if verdict:
+                gap = info.get("last_gap_days")
+                # Consecutive observations can straddle a holiday; say so rather
+                # than calling a week-long move a daily one.
+                window = "单日" if not gap or gap <= 3 else f"{gap}日间"
+                level = info.get("yield")
+                tail = "" if level is None else f"，至 {level:.3f}%"
                 alerts.append(
                     {
-                        "severity": "high" if abs(daily) >= 2 * ALERT_RULES["daily_bp"] else "medium",
+                        "severity": verdict["severity"],
                         "market": market,
                         "kind": "daily_move",
                         "metric": f"{market} {tenor}",
                         "value_bp": daily,
-                        "threshold_bp": ALERT_RULES["daily_bp"],
+                        "sigma_bp": sigma,
+                        "sigma_multiple": verdict["multiple"],
+                        "trigger": verdict["trigger"],
                         "message": (
-                            f"{label} {tenor} 单日{'上行' if daily > 0 else '下行'} "
-                            f"{abs(daily):.1f}bp，至 {info['yield']:.3f}%"
+                            f"{label} {tenor} {window}{'上行' if daily > 0 else '下行'} "
+                            f"{abs(daily):.1f}bp{verdict['suffix']}{tail}"
                         ),
                     }
                 )
-            if weekly is not None and abs(weekly) >= ALERT_RULES["weekly_bp"]:
+
+            weekly = info.get("change_1w_bp")
+            # Measured 5-observation volatility, not daily sigma times sqrt(5).
+            weekly_sigma = info.get("weekly_sigma_bp")
+            verdict = judge_move(
+                weekly,
+                weekly_sigma,
+                sigma_threshold=ALERT_RULES["weekly_sigma"],
+                floor_bp=ALERT_RULES["min_weekly_bp"],
+                ceiling_bp=ALERT_RULES["abs_weekly_bp"],
+                high_sigma=None,
+            )
+            if verdict:
                 alerts.append(
                     {
-                        "severity": "medium",
+                        "severity": verdict["severity"],
                         "market": market,
                         "kind": "weekly_move",
                         "metric": f"{market} {tenor}",
                         "value_bp": weekly,
-                        "threshold_bp": ALERT_RULES["weekly_bp"],
+                        "sigma_bp": None if weekly_sigma is None else round(weekly_sigma, 2),
+                        "sigma_multiple": verdict["multiple"],
+                        "trigger": verdict["trigger"],
                         "message": (
                             f"{label} {tenor} 一周累计"
                             f"{'上行' if weekly > 0 else '下行'} {abs(weekly):.1f}bp"
+                            f"{verdict['suffix']}"
                         ),
                     }
                 )
+        stale = staleness_alert(market, snapshot, label)
+        if stale:
+            alerts.append(stale)
+
         structure = snapshot["term_structure"]
         if structure.get("inverted"):
             alerts.append(
@@ -636,18 +1003,31 @@ def build_alerts(
 
     for key, info in spreads.items():
         daily = info.get("change_1d_bp")
-        if daily is not None and abs(daily) >= ALERT_RULES["spread_daily_bp"]:
+        sigma = info.get("daily_sigma_bp")
+        verdict = judge_move(
+            daily,
+            sigma,
+            sigma_threshold=ALERT_RULES["spread_daily_sigma"],
+            floor_bp=ALERT_RULES["min_daily_bp"],
+            ceiling_bp=ALERT_RULES["abs_daily_bp"],
+            high_sigma=ALERT_RULES["daily_sigma_high"],
+        )
+        if verdict:
+            spread_level = finite(info.get("spread_bp"))
+            tail = "" if spread_level is None else f"，至 {spread_level:.1f}bp"
             alerts.append(
                 {
-                    "severity": "medium",
+                    "severity": verdict["severity"],
                     "market": "CROSS",
                     "kind": "spread_move",
                     "metric": key,
                     "value_bp": daily,
-                    "threshold_bp": ALERT_RULES["spread_daily_bp"],
+                    "sigma_bp": sigma,
+                    "sigma_multiple": verdict["multiple"],
+                    "trigger": verdict["trigger"],
                     "message": (
                         f"{info['label']}单日{'走阔' if daily > 0 else '收窄'} "
-                        f"{abs(daily):.1f}bp，至 {info['spread_bp']:.1f}bp"
+                        f"{abs(daily):.1f}bp{verdict['suffix']}{tail}"
                     ),
                 }
             )
@@ -753,19 +1133,57 @@ def build_insight(
 # ---------------------------------------------------------------------------
 
 
+def needs_backfill(history: Dict[str, Series], min_days: int = 400) -> Tuple[bool, str]:
+    """Decide between a cheap incremental refresh and a full history walk.
+
+    A full walk is only needed on a cold start, when a market is thin enough
+    that percentiles would be unreliable, or when the cache has fallen far
+    enough behind that an incremental window might not close the gap.
+    """
+    today = datetime.now(timezone.utc).date()
+    for market in MARKETS:
+        series = history[market]
+        if not series:
+            return True, f"{market} 无缓存历史"
+        if len(series) < min_days:
+            return True, f"{market} 仅 {len(series)} 个观测，不足 {min_days}"
+        lag = (today - date.fromisoformat(max(series))).days
+        if lag > 20:
+            return True, f"{market} 缓存落后 {lag} 天"
+    return False, "缓存充足，仅取增量"
+
+
 def main() -> int:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     history = load_history()
     failures: List[str] = []
     stale_markets: List[str] = []
+    rejections: List[str] = []
     fetched: Dict[str, int] = {}
 
-    # China + United States via Eastmoney.
+    backfill, reason = needs_backfill(history)
+    log(f"Fetch mode: {'full backfill' if backfill else 'incremental'} ({reason})")
+    # Incremental runs re-read a short overlap window rather than only the newest
+    # print, so a revised or late-published observation still gets corrected.
+    fred_since = (
+        None
+        if backfill
+        else (datetime.now(timezone.utc).date() - timedelta(days=45)).isoformat()
+    )
+
+    # China + United States via Eastmoney. The raw US series is kept aside so
+    # the cross-check can compare two independent sources rather than the merged
+    # result, which would already carry FRED's own values.
+    eastmoney_us: Series = {}
     try:
-        eastmoney = fetch_eastmoney()
+        eastmoney = fetch_eastmoney(max_pages=20 if backfill else 1)
+        eastmoney_us = eastmoney["US"]
         for market in ("CN", "US"):
-            history[market], added = merge_series(history[market], eastmoney[market])
+            history[market], added, bad = merge_series(
+                history[market], eastmoney[market], label=f"东财 {market} "
+            )
             fetched[market] = added
+            rejections.extend(bad)
     except Exception as exc:  # noqa: BLE001 - upstream shape varies
         failures.append(f"Eastmoney: {exc}")
         log(f"Eastmoney unavailable, keeping cached CN/US history: {exc}")
@@ -774,10 +1192,11 @@ def main() -> int:
     # United States cross-check / fallback via FRED.
     us_crosscheck: Dict[str, Any] = {"status": "skipped"}
     try:
-        fred = fetch_fred()
-        history["US"], added = merge_series(history["US"], fred)
+        fred = fetch_fred(since=fred_since)
+        history["US"], added, bad = merge_series(history["US"], fred, label="FRED ")
         fetched["US"] = fetched.get("US", 0) + added
-        us_crosscheck = compare_us_sources(history["US"], fred)
+        rejections.extend(bad)
+        us_crosscheck = compare_us_sources(eastmoney_us, fred)
     except Exception as exc:  # noqa: BLE001
         failures.append(f"FRED: {exc}")
         log(f"FRED unavailable: {exc}")
@@ -786,13 +1205,17 @@ def main() -> int:
 
     # Japan via MOF.
     try:
-        japan = fetch_mof_japan()
-        history["JP"], added = merge_series(history["JP"], japan)
+        japan = fetch_mof_japan(include_history=backfill)
+        history["JP"], added, bad = merge_series(history["JP"], japan, label="MOF ")
         fetched["JP"] = added
+        rejections.extend(bad)
     except Exception as exc:  # noqa: BLE001
         failures.append(f"MOF: {exc}")
         log(f"MOF unavailable, keeping cached JP history: {exc}")
         stale_markets.append("JP")
+
+    for note in rejections[:20]:
+        log(f"Rejected by sanity screen: {note}")
 
     if not any(history[market] for market in MARKETS):
         log("FATAL: no data from any source and no cached history to fall back on.")
@@ -823,10 +1246,18 @@ def main() -> int:
         "insight": build_insight(snapshots, spreads),
         "us_crosscheck": us_crosscheck,
         "data_quality": {
-            "status": "degraded" if failures else "ok",
+            # A stale-data alert means the numbers stopped moving even if every
+            # fetch returned 200, so it counts as degraded too.
+            "status": "degraded"
+            if failures or any(a["kind"] == "stale_data" for a in alerts)
+            else "ok",
             "failures": failures,
             "stale_markets": sorted(set(stale_markets)),
             "observation_counts": {market: len(history[market]) for market in MARKETS},
+            "fetch_mode": "backfill" if backfill else "incremental",
+            "fetch_mode_reason": reason,
+            "rejected_values": rejections[:50],
+            "rejected_count": len(rejections),
         },
         "sources": {market: MARKET_META[market]["source_url"] for market in MARKETS},
     }
@@ -853,23 +1284,55 @@ def main() -> int:
     return 0
 
 
-def compare_us_sources(merged: Series, fred: Series) -> Dict[str, Any]:
-    """Flag any tenor where Eastmoney and FRED disagree by more than 5bp."""
-    dates = sorted(stamp for stamp, values in fred.items() if values)
-    if not dates:
-        return {"status": "skipped"}
-    latest = dates[-1]
+def compare_us_sources(eastmoney: Series, fred: Series) -> Dict[str, Any]:
+    """Flag any tenor where Eastmoney and FRED disagree by more than 5bp.
+
+    Both arguments must be the *raw* per-source series. Passing the merged
+    history here would compare FRED against itself, since merging overwrites
+    the Eastmoney value with FRED's - a check that can only ever report 0.0bp.
+
+    The two feeds also publish on different lags, so the comparison is made on
+    the newest date they share rather than on either one's own latest date.
+    """
+    shared = sorted(
+        stamp
+        for stamp, values in fred.items()
+        if values and any(eastmoney.get(stamp, {}).get(t) is not None for t in TENORS)
+    )
+    if not shared:
+        return {
+            "status": "no_overlap",
+            "note": "两源暂无共同交易日可比对（通常是发布时滞所致）",
+        }
+
+    latest = shared[-1]
     diffs: Dict[str, Optional[float]] = {}
     for tenor in TENORS:
-        left = merged.get(latest, {}).get(tenor)
+        left = eastmoney.get(latest, {}).get(tenor)
         right = fred.get(latest, {}).get(tenor)
         diffs[tenor] = None if left is None or right is None else bp(left - right)
-    disagreements = {t: d for t, d in diffs.items() if d is not None and abs(d) > 5.0}
+
+    comparable = {t: d for t, d in diffs.items() if d is not None}
+    if not comparable:
+        return {
+            "status": "no_overlap",
+            "as_of": latest,
+            "diff_bp": diffs,
+            "note": "共同交易日上没有可比对的期限",
+        }
+
+    disagreements = {t: d for t, d in comparable.items() if abs(d) > 5.0}
+    worst = max(abs(d) for d in comparable.values())
     return {
         "status": "mismatch" if disagreements else "ok",
         "as_of": latest,
         "diff_bp": diffs,
-        "note": "东财与 FRED 同日差异超过 5bp 的期限" if disagreements else "两源一致（≤5bp）",
+        "max_abs_diff_bp": round(worst, 1),
+        "note": (
+            f"东财与 FRED 在 {latest} 有 {len(disagreements)} 个期限差异超过 5bp"
+            if disagreements
+            else f"两源在 {latest} 一致（最大差异 {worst:.1f}bp）"
+        ),
     }
 
 

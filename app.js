@@ -29,6 +29,10 @@ const changeColumns = [
   ["change_1y_bp", "1年"],
 ];
 
+// Daily sigma is the yardstick the alerts use, so it belongs next to the moves
+// it scales - a 4bp day means different things in Beijing and Tokyo.
+const SIGMA_COLUMN = ["daily_sigma_bp", "日σ"];
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
@@ -98,8 +102,17 @@ function renderHero(data) {
 function renderQuality(data) {
   const quality = data.data_quality || {};
   const state = $("#quality-state");
+  const stale = (data.alerts || []).filter((a) => a.kind === "stale_data");
   const ok = quality.status === "ok";
-  state.textContent = ok ? "数据正常" : "部分数据源降级";
+
+  // Staleness is the failure mode that looks like calm, so it gets named
+  // explicitly rather than folded into a generic "degraded" label.
+  if (stale.length) {
+    const worst = Math.max(...stale.map((a) => finite(a.age_days) ?? 0));
+    state.textContent = `数据陈旧 ${worst} 天`;
+  } else {
+    state.textContent = ok ? "数据正常" : "部分数据源降级";
+  }
   state.classList.toggle("is-degraded", !ok);
   $("#updated-at").textContent = `更新于 ${dateTime(data.updated_at)}`;
 }
@@ -133,11 +146,11 @@ function renderAlerts(data) {
   });
 }
 
-function curvePoints(tenors) {
+function curvePoints(tenors, scale = null) {
   const values = TENORS.map((tenor) => finite(tenors?.[tenor]?.yield));
   if (values.some((value) => value === null)) return null;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const min = scale ? scale.min : Math.min(...values);
+  const max = scale ? scale.max : Math.max(...values);
   const span = max - min || 1;
   return values.map((value, index) => ({
     x: 20 + (index * 280) / (TENORS.length - 1),
@@ -162,7 +175,24 @@ function renderMarketCard(card, market, payload) {
   chg.textContent = signedBp(tenors["10Y"]?.change_1d_bp);
   chg.className = toneClass(tenors["10Y"]?.change_1d_bp);
 
-  const points = curvePoints(tenors);
+  // All three curves share one scale so the overlay shows real movement rather
+  // than each line being independently normalised into the same band.
+  const history = payload.history_curves || {};
+  const scaleValues = [];
+  TENORS.forEach((tenor) => {
+    [
+      finite(tenors?.[tenor]?.yield),
+      finite(history["1m"]?.tenors?.[tenor]),
+      finite(history["1y"]?.tenors?.[tenor]),
+    ].forEach((value) => {
+      if (value !== null) scaleValues.push(value);
+    });
+  });
+  const scale = scaleValues.length
+    ? { min: Math.min(...scaleValues), max: Math.max(...scaleValues) }
+    : null;
+
+  const points = curvePoints(tenors, scale);
   const line = $('[data-role="curve-line"]', card);
   const dots = $('[data-role="curve-dots"]', card);
   dots.innerHTML = "";
@@ -179,6 +209,22 @@ function renderMarketCard(card, market, payload) {
   } else {
     line.setAttribute("points", "");
   }
+
+  [
+    ["1m", '[data-role="curve-1m"]'],
+    ["1y", '[data-role="curve-1y"]'],
+  ].forEach(([key, selector]) => {
+    const target = $(selector, card);
+    if (!target) return;
+    const snapshot = history[key]?.tenors;
+    const past = snapshot
+      ? curvePoints(
+          Object.fromEntries(TENORS.map((tenor) => [tenor, { yield: snapshot[tenor] }])),
+          scale,
+        )
+      : null;
+    target.setAttribute("points", past ? past.map((p) => `${p.x},${p.y}`).join(" ") : "");
+  });
 
   const axis = $('[data-role="curve-axis"]', card);
   axis.innerHTML = "";
@@ -279,6 +325,11 @@ function renderTable(data) {
         row.append(cell);
       });
 
+      const sigmaCell = document.createElement("td");
+      sigmaCell.className = "mono muted-cell";
+      sigmaCell.textContent = plainBp(info[SIGMA_COLUMN[0]]);
+      row.append(sigmaCell);
+
       const percentileCell = document.createElement("td");
       percentileCell.className = "mono";
       const percentile = finite(info.percentile_2y);
@@ -314,6 +365,157 @@ function renderSources(data) {
   }
 }
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+const TREND_COLORS = ["#4867a8", "#b64634", "#1f6a4d", "#b57a21"];
+
+function svgEl(name, attrs = {}) {
+  const node = document.createElementNS(SVG_NS, name);
+  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+  return node;
+}
+
+/**
+ * Draw a multi-series time chart. Every series shares one y-scale and one date
+ * axis, so the lines are directly comparable; dates are positioned by actual
+ * calendar time rather than by index, which keeps holidays and differing
+ * observation counts from distorting the shape.
+ */
+function renderTrendChart(svg, legendHost, series, { unit = "%", digits = 2 } = {}) {
+  svg.innerHTML = "";
+  if (legendHost) legendHost.innerHTML = "";
+
+  const usable = series.filter((entry) => (entry.points || []).length > 1);
+  if (!usable.length) {
+    svg.append(
+      svgEl("text", { x: 360, y: 130, "text-anchor": "middle", class: "trend-empty" }),
+    );
+    svg.lastChild.textContent = "暂无历史数据";
+    return;
+  }
+
+  const width = 720;
+  const height = 260;
+  const pad = { top: 16, right: 14, bottom: 26, left: 52 };
+  const plotW = width - pad.left - pad.right;
+  const plotH = height - pad.top - pad.bottom;
+
+  const times = [];
+  const values = [];
+  usable.forEach((entry) => {
+    entry.points.forEach(([stamp, value]) => {
+      const time = Date.parse(stamp);
+      const parsed = finite(value);
+      if (Number.isFinite(time) && parsed !== null) {
+        times.push(time);
+        values.push(parsed);
+      }
+    });
+  });
+  if (!times.length) return;
+
+  const minT = Math.min(...times);
+  const maxT = Math.max(...times);
+  const spanT = maxT - minT || 1;
+  let minV = Math.min(...values);
+  let maxV = Math.max(...values);
+  const padV = (maxV - minV || 1) * 0.08;
+  minV -= padV;
+  maxV += padV;
+  const spanV = maxV - minV || 1;
+
+  const xOf = (time) => pad.left + ((time - minT) / spanT) * plotW;
+  const yOf = (value) => pad.top + plotH - ((value - minV) / spanV) * plotH;
+
+  // Horizontal gridlines with value labels.
+  const ticks = 4;
+  for (let i = 0; i <= ticks; i += 1) {
+    const value = minV + (spanV * i) / ticks;
+    const y = yOf(value);
+    svg.append(
+      svgEl("line", { x1: pad.left, y1: y, x2: width - pad.right, y2: y, class: "trend-grid" }),
+    );
+    const label = svgEl("text", { x: pad.left - 8, y: y + 3.5, "text-anchor": "end", class: "trend-tick" });
+    label.textContent = `${value.toFixed(digits)}${unit === "%" ? "%" : ""}`;
+    svg.append(label);
+  }
+
+  // Zero line matters for spreads, which cross sign.
+  if (minV < 0 && maxV > 0) {
+    const y = yOf(0);
+    svg.append(
+      svgEl("line", { x1: pad.left, y1: y, x2: width - pad.right, y2: y, class: "trend-zero" }),
+    );
+  }
+
+  usable.forEach((entry, index) => {
+    const color = entry.color || TREND_COLORS[index % TREND_COLORS.length];
+    const coords = entry.points
+      .map(([stamp, value]) => {
+        const time = Date.parse(stamp);
+        const parsed = finite(value);
+        if (!Number.isFinite(time) || parsed === null) return null;
+        return `${xOf(time).toFixed(1)},${yOf(parsed).toFixed(1)}`;
+      })
+      .filter(Boolean)
+      .join(" ");
+    svg.append(
+      svgEl("polyline", { points: coords, class: "trend-line", stroke: color }),
+    );
+
+    if (legendHost) {
+      const chip = document.createElement("span");
+      chip.className = "trend-legend-item";
+      const swatch = document.createElement("i");
+      swatch.style.background = color;
+      const last = entry.points[entry.points.length - 1];
+      const lastValue = finite(last?.[1]);
+      chip.append(swatch);
+      chip.append(
+        document.createTextNode(
+          lastValue === null
+            ? entry.label
+            : `${entry.label} ${lastValue.toFixed(digits)}${unit === "%" ? "%" : "bp"}`,
+        ),
+      );
+      legendHost.append(chip);
+    }
+  });
+
+  // Date axis: first, middle and last observation.
+  [minT, minT + spanT / 2, maxT].forEach((time, index) => {
+    const label = svgEl("text", {
+      x: xOf(time),
+      y: height - 8,
+      "text-anchor": index === 0 ? "start" : index === 2 ? "end" : "middle",
+      class: "trend-tick",
+    });
+    label.textContent = new Date(time).toISOString().slice(0, 7);
+    svg.append(label);
+  });
+}
+
+function renderTrends(data) {
+  renderTrendChart(
+    $("#trend-yields"),
+    $("#trend-yields-legend"),
+    MARKETS.map((market) => ({
+      label: data.markets?.[market]?.name_zh || market,
+      points: data.markets?.[market]?.ten_year_history || [],
+    })),
+    { unit: "%", digits: 2 },
+  );
+
+  renderTrendChart(
+    $("#trend-spreads"),
+    $("#trend-spreads-legend"),
+    Object.values(data.cross_spreads || {}).map((info) => ({
+      label: info.label || "",
+      points: info.history || [],
+    })),
+    { unit: "bp", digits: 0 },
+  );
+}
+
 function renderError(message) {
   $("#hero-word").textContent = "读数失败";
   $("#hero-summary").textContent = message;
@@ -341,6 +543,7 @@ async function main() {
     if (payload) renderMarketCard(card, market, payload);
   });
   renderSpreads(data);
+  renderTrends(data);
   renderTable(data);
   renderSources(data);
 }
