@@ -1,0 +1,316 @@
+{
+  "generated_at": "2026-08-18T08:49:24.373483+00:00",
+  "updated_at": "2026-08-18T08:49:24.373483+00:00",
+  "tenors": [
+    "2Y",
+    "5Y",
+    "10Y",
+    "30Y"
+  ],
+  "markets": {
+    "CN": {
+      "name_zh": "中国国债",
+      "name_en": "China Government Bond",
+      "currency": "CNY",
+      "source": "东方财富数据中心",
+      "source_url": "https://data.eastmoney.com/cjsj/zmgzsyl.html",
+      "as_of": "2026-08-17",
+      "tenors": {
+        "2Y": {
+          "yield": 1.2295,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 0.0,
+          "change_1w_bp": -2.1,
+          "change_1m_bp": -3.5,
+          "change_3m_bp": -3.9,
+          "change_1y_bp": -17.3,
+          "percentile_2y": 6.0
+        },
+        "5Y": {
+          "yield": 1.389,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": -0.4,
+          "change_1w_bp": -1.4,
+          "change_1m_bp": -5.8,
+          "change_3m_bp": -6.8,
+          "change_1y_bp": -20.6,
+          "percentile_2y": 1.0
+        },
+        "10Y": {
+          "yield": 1.6924,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": -0.4,
+          "change_1w_bp": -1.5,
+          "change_1m_bp": -4.8,
+          "change_3m_bp": -6.6,
+          "change_1y_bp": -5.4,
+          "percentile_2y": 20.2
+        },
+        "30Y": {
+          "yield": 2.1624,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": -0.2,
+          "change_1w_bp": 0.4,
+          "change_1m_bp": -8.0,
+          "change_3m_bp": -8.2,
+          "change_1y_bp": 11.5,
+          "percentile_2y": 42.5
+        }
+      },
+      "term_structure": {
+        "spread_10y_2y_bp": 46.3,
+        "spread_30y_10y_bp": 47.0,
+        "spread_10y_5y_bp": 30.3,
+        "shape": "normal",
+        "inverted": false
+      },
+      "temperature": {
+        "score": 32.0,
+        "level": "cool",
+        "components": {
+          "level_percentile": 17.4,
+          "curve_slope": 48.8,
+          "momentum_1m": 45.2,
+          "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
+        }
+      },
+      "new_observations": 6150
+    },
+    "US": {
+      "name_zh": "美国国债",
+      "name_en": "US Treasury",
+      "currency": "USD",
+      "source": "东方财富数据中心 / FRED 交叉校验",
+      "source_url": "https://fred.stlouisfed.org/categories/115",
+      "as_of": "2026-08-17",
+      "tenors": {
+        "2Y": {
+          "yield": 4.19,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 2.0,
+          "change_1w_bp": -6.0,
+          "change_1m_bp": 1.0,
+          "change_3m_bp": 12.0,
+          "change_1y_bp": 44.0,
+          "percentile_2y": 84.5
+        },
+        "5Y": {
+          "yield": 4.38,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 2.0,
+          "change_1w_bp": -3.0,
+          "change_1m_bp": 10.0,
+          "change_3m_bp": 11.0,
+          "change_1y_bp": 53.0,
+          "percentile_2y": 93.5
+        },
+        "10Y": {
+          "yield": 4.72,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 4.0,
+          "change_1w_bp": 0.0,
+          "change_1m_bp": 17.0,
+          "change_3m_bp": 11.0,
+          "change_1y_bp": 39.0,
+          "percentile_2y": 99.2
+        },
+        "30Y": {
+          "yield": 5.31,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 6.0,
+          "change_1w_bp": 6.0,
+          "change_1m_bp": 25.0,
+          "change_3m_bp": 17.0,
+          "change_1y_bp": 39.0,
+          "percentile_2y": 100.0
+        }
+      },
+      "term_structure": {
+        "spread_10y_2y_bp": 53.0,
+        "spread_30y_10y_bp": 59.0,
+        "spread_10y_5y_bp": 34.0,
+        "shape": "normal",
+        "inverted": false
+      },
+      "temperature": {
+        "score": 77.5,
+        "level": "hot",
+        "components": {
+          "level_percentile": 94.3,
+          "curve_slope": 51.0,
+          "momentum_1m": 67.0,
+          "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
+        }
+      },
+      "new_observations": 16144
+    },
+    "JP": {
+      "name_zh": "日本国债",
+      "name_en": "Japanese Government Bond",
+      "currency": "JPY",
+      "source": "日本财务省 (MOF)",
+      "source_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/",
+      "as_of": "2026-08-17",
+      "tenors": {
+        "2Y": {
+          "yield": 1.696,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 3.9,
+          "change_1w_bp": 7.8,
+          "change_1m_bp": 26.0,
+          "change_3m_bp": 26.5,
+          "change_1y_bp": 87.0,
+          "percentile_2y": 100.0
+        },
+        "5Y": {
+          "yield": 2.177,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 2.6,
+          "change_1w_bp": 7.6,
+          "change_1m_bp": 23.2,
+          "change_3m_bp": 16.2,
+          "change_1y_bp": 105.7,
+          "percentile_2y": 100.0
+        },
+        "10Y": {
+          "yield": 2.919,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 4.1,
+          "change_1w_bp": 10.4,
+          "change_1m_bp": 20.4,
+          "change_3m_bp": 19.0,
+          "change_1y_bp": 134.5,
+          "percentile_2y": 100.0
+        },
+        "30Y": {
+          "yield": 4.05,
+          "as_of": "2026-08-17",
+          "stale": false,
+          "change_1d_bp": 4.8,
+          "change_1w_bp": 9.3,
+          "change_1m_bp": 15.6,
+          "change_3m_bp": 5.0,
+          "change_1y_bp": 101.8,
+          "percentile_2y": 100.0
+        }
+      },
+      "term_structure": {
+        "spread_10y_2y_bp": 122.3,
+        "spread_30y_10y_bp": 113.1,
+        "spread_10y_5y_bp": 74.2,
+        "shape": "steep",
+        "inverted": false
+      },
+      "temperature": {
+        "score": 85.9,
+        "level": "hot",
+        "components": {
+          "level_percentile": 100.0,
+          "curve_slope": 74.1,
+          "momentum_1m": 70.4,
+          "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
+        }
+      },
+      "new_observations": 13280
+    }
+  },
+  "cross_spreads": {
+    "CN10Y_US10Y": {
+      "label": "中美 10Y 利差",
+      "tenor": "10Y",
+      "as_of": "2026-08-17",
+      "spread_bp": -302.8,
+      "change_1d_bp": -4.4,
+      "change_1w_bp": -1.5,
+      "change_1m_bp": -21.8,
+      "change_1y_bp": -44.4,
+      "percentile_2y": 1.6
+    },
+    "JP10Y_US10Y": {
+      "label": "日美 10Y 利差",
+      "tenor": "10Y",
+      "as_of": "2026-08-17",
+      "spread_bp": -180.1,
+      "change_1d_bp": 0.1,
+      "change_1w_bp": 10.4,
+      "change_1m_bp": 3.4,
+      "change_1y_bp": 95.5,
+      "percentile_2y": 95.4
+    },
+    "CN10Y_JP10Y": {
+      "label": "中日 10Y 利差",
+      "tenor": "10Y",
+      "as_of": "2026-08-17",
+      "spread_bp": -122.7,
+      "change_1d_bp": -4.5,
+      "change_1w_bp": -11.9,
+      "change_1m_bp": -25.2,
+      "change_1y_bp": -139.9,
+      "percentile_2y": 0.2
+    },
+    "CN2Y_US2Y": {
+      "label": "中美 2Y 利差",
+      "tenor": "2Y",
+      "as_of": "2026-08-17",
+      "spread_bp": -296.1,
+      "change_1d_bp": -2.0,
+      "change_1w_bp": 3.9,
+      "change_1m_bp": -4.5,
+      "change_1y_bp": -61.3,
+      "percentile_2y": 12.3
+    }
+  },
+  "alerts": [],
+  "alert_rules": {
+    "daily_bp": 10.0,
+    "weekly_bp": 25.0,
+    "spread_daily_bp": 10.0,
+    "inversion_watch_bp": 0.0
+  },
+  "insight": {
+    "headline": "三国主权收益率曲线与跨国利差监控。",
+    "drivers": [
+      "中国国债 10Y 1.692%（-0.4bp）",
+      "美国国债 10Y 4.720%（+4.0bp）",
+      "日本国债 10Y 2.919%（+4.1bp）",
+      "中美 10Y 利差 -302.8bp（中债低于美债）"
+    ]
+  },
+  "us_crosscheck": {
+    "status": "ok",
+    "as_of": "2026-08-14",
+    "diff_bp": {
+      "2Y": 0.0,
+      "5Y": 0.0,
+      "10Y": 0.0,
+      "30Y": 0.0
+    },
+    "note": "两源一致（≤5bp）"
+  },
+  "data_quality": {
+    "status": "ok",
+    "failures": [],
+    "stale_markets": [],
+    "observation_counts": {
+      "CN": 6150,
+      "US": 16144,
+      "JP": 13280
+    }
+  },
+  "sources": {
+    "CN": "https://data.eastmoney.com/cjsj/zmgzsyl.html",
+    "US": "https://fred.stlouisfed.org/categories/115",
+    "JP": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/"
+  }
+}

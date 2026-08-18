@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="一页读懂中美日国债：收益率曲线、期限结构、跨国利差与异动告警。"
+    />
+    <meta name="theme-color" content="#f3f0e8" />
+    <title>Bond Watch · 中美日国债监控</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Bond Watch 首页">
+          <span class="brand-mark" aria-hidden="true">B/W</span>
+          <span>BOND WATCH</span>
+        </a>
+        <div class="header-meta">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="quality-state">数据载入中</span>
+          <span class="header-divider"></span>
+          <span id="updated-at">—</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero-grid" aria-labelledby="page-title">
+          <div class="hero-copy">
+            <p class="eyebrow">CN · US · JP SOVEREIGN YIELDS</p>
+            <h1 id="page-title">三国国债，<br /><em id="hero-word">正在读数</em></h1>
+            <p id="hero-summary" class="hero-summary">
+              正在把中美日的收益率曲线、期限结构和跨国利差拼成一张可读的每日快照。
+            </p>
+            <div id="driver-list" class="driver-list" aria-label="主要驱动"></div>
+          </div>
+
+          <div class="alert-card">
+            <div class="card-heading">
+              <span>异动告警</span>
+              <span id="alert-count" class="quality-badge">CHECKING</span>
+            </div>
+            <ul id="alert-list" class="alert-list">
+              <li class="alert-empty">等待数据…</li>
+            </ul>
+            <p class="card-note">
+              触发条件：单期限单日 ±10bp、一周 ±25bp，跨国利差单日 ±10bp，或 10Y-2Y 倒挂。
+            </p>
+          </div>
+        </section>
+
+        <section class="market-grid" aria-label="各国国债概览">
+          <article class="market-card" data-market="CN">
+            <div class="card-heading">
+              <span class="market-name">中国国债 <small>CGB</small></span>
+              <span class="temp-chip" data-role="temp">—</span>
+            </div>
+            <div class="headline-yield">
+              <strong data-role="ten">—</strong><span>10Y</span>
+              <em data-role="ten-chg">—</em>
+            </div>
+            <div class="curve-wrap">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="中国国债收益率曲线">
+                <polyline data-role="curve-line" class="curve-line" points="" />
+                <g data-role="curve-dots"></g>
+              </svg>
+              <div class="curve-axis" data-role="curve-axis"></div>
+            </div>
+            <dl class="stat-rows" data-role="stats"></dl>
+          </article>
+
+          <article class="market-card" data-market="US">
+            <div class="card-heading">
+              <span class="market-name">美国国债 <small>UST</small></span>
+              <span class="temp-chip" data-role="temp">—</span>
+            </div>
+            <div class="headline-yield">
+              <strong data-role="ten">—</strong><span>10Y</span>
+              <em data-role="ten-chg">—</em>
+            </div>
+            <div class="curve-wrap">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="美国国债收益率曲线">
+                <polyline data-role="curve-line" class="curve-line" points="" />
+                <g data-role="curve-dots"></g>
+              </svg>
+              <div class="curve-axis" data-role="curve-axis"></div>
+            </div>
+            <dl class="stat-rows" data-role="stats"></dl>
+          </article>
+
+          <article class="market-card" data-market="JP">
+            <div class="card-heading">
+              <span class="market-name">日本国债 <small>JGB</small></span>
+              <span class="temp-chip" data-role="temp">—</span>
+            </div>
+            <div class="headline-yield">
+              <strong data-role="ten">—</strong><span>10Y</span>
+              <em data-role="ten-chg">—</em>
+            </div>
+            <div class="curve-wrap">
+              <svg class="curve" viewBox="0 0 320 120" role="img" aria-label="日本国债收益率曲线">
+                <polyline data-role="curve-line" class="curve-line" points="" />
+                <g data-role="curve-dots"></g>
+              </svg>
+              <div class="curve-axis" data-role="curve-axis"></div>
+            </div>
+            <dl class="stat-rows" data-role="stats"></dl>
+          </article>
+        </section>
+
+        <section class="panel" aria-labelledby="spread-title">
+          <div class="panel-heading">
+            <h2 id="spread-title">跨国利差</h2>
+            <p>利差是汇率与跨境资本流动的核心变量。括号内为过去两年分位。</p>
+          </div>
+          <div id="spread-grid" class="spread-grid"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="table-title">
+          <div class="panel-heading">
+            <h2 id="table-title">期限明细</h2>
+            <p>各期限收益率、变动与两年分位。变动单位为基点（bp）。</p>
+          </div>
+          <div class="table-scroll">
+            <table class="detail-table">
+              <thead>
+                <tr>
+                  <th scope="col">市场</th>
+                  <th scope="col">期限</th>
+                  <th scope="col">收益率</th>
+                  <th scope="col">1日</th>
+                  <th scope="col">1周</th>
+                  <th scope="col">1月</th>
+                  <th scope="col">3月</th>
+                  <th scope="col">1年</th>
+                  <th scope="col">2年分位</th>
+                </tr>
+              </thead>
+              <tbody id="detail-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="source-title">
+          <div class="panel-heading">
+            <h2 id="source-title">数据来源</h2>
+            <p>全部为公开免费数据源，无需 API key。</p>
+          </div>
+          <ul id="source-list" class="source-list"></ul>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Bond Watch · 中美日国债监控</span>
+        <span id="footer-note">数据每交易日更新，仅供研究参考，不构成投资建议。</span>
+      </footer>
+    </div>
+  </body>
+</html>
