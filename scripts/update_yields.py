@@ -47,6 +47,12 @@ EASTMONEY_URL = (
     "?type=RPTA_WEB_TREASURYYIELD&sty=ALL&st=SOLAR_DATE&sr=-1&p={page}&ps={size}&source=WEB"
 )
 EASTMONEY_REFERER = "https://data.eastmoney.com/cjsj/zmgzsyl.html"
+# Backfill walks history in large pages; a daily run takes one small page.
+# 60 rows is roughly three trading months - ample overlap to absorb upstream
+# revisions, and still well above the 20 comparable rows the mapping guard
+# needs to validate the tenor field ids on every run.
+EASTMONEY_BACKFILL_PAGE_SIZE = 500
+EASTMONEY_INCREMENTAL_PAGE_SIZE = 60
 # MOF splits the series: ``jgbcme.csv`` is the current month only, while
 # ``historical/jgbcme_all.csv`` lags it by a few weeks. Fetch both and merge.
 MOF_CURRENT_URL = (
@@ -219,12 +225,19 @@ def fetch_bytes(
 Series = Dict[str, Dict[str, float]]
 
 
-def fetch_eastmoney(max_pages: int = 20, page_size: int = 500) -> Dict[str, Series]:
+def fetch_eastmoney(
+    max_pages: int = 20, page_size: int = EASTMONEY_BACKFILL_PAGE_SIZE
+) -> Dict[str, Series]:
     """China + United States curves from the Eastmoney datacenter feed.
 
     ``max_pages`` bounds the walk backwards through history. Daily runs only
     need the newest page because everything older already sits in the committed
     history; the full walk is reserved for a cold start or a detected gap.
+
+    ``page_size`` differs by mode on purpose. Backfill wants large pages so the
+    ~9.3k row history takes 19 requests instead of 156. A daily run wants a
+    small page: it only needs enough overlap to pick up upstream revisions, and
+    a 500-row page spans nearly two years of history that is already cached.
     """
     out: Dict[str, Series] = {"CN": {}, "US": {}}
     guard_rows: List[Dict[str, Any]] = []
@@ -1176,7 +1189,14 @@ def main() -> int:
     # result, which would already carry FRED's own values.
     eastmoney_us: Series = {}
     try:
-        eastmoney = fetch_eastmoney(max_pages=20 if backfill else 1)
+        eastmoney = fetch_eastmoney(
+            max_pages=20 if backfill else 1,
+            page_size=(
+                EASTMONEY_BACKFILL_PAGE_SIZE
+                if backfill
+                else EASTMONEY_INCREMENTAL_PAGE_SIZE
+            ),
+        )
         eastmoney_us = eastmoney["US"]
         for market in ("CN", "US"):
             history[market], added, bad = merge_series(
