@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-18T08:49:24.373483+00:00",
-  "updated_at": "2026-08-18T08:49:24.373483+00:00",
+  "generated_at": "2026-08-18T09:39:55.378550+00:00",
+  "updated_at": "2026-08-18T09:39:55.378550+00:00",
   "tenors": [
     "2Y",
     "5Y",
@@ -78,7 +78,7 @@
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
-      "new_observations": 6150
+      "new_observations": 3653
     },
     "US": {
       "name_zh": "美国国债",
@@ -150,7 +150,7 @@
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
-      "new_observations": 16144
+      "new_observations": 13645
     },
     "JP": {
       "name_zh": "日本国债",
@@ -222,7 +222,7 @@
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
-      "new_observations": 13280
+      "new_observations": 10841
     }
   },
   "cross_spreads": {
