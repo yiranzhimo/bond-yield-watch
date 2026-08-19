@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T13:51:30.546999+00:00",
+  "generated_at": "2026-08-19T08:50:22.948157+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,17 +14,5 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": [
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "daily_move",
-      "metric": "JP 2Y",
-      "value_bp": 3.9,
-      "sigma_bp": 1.81,
-      "sigma_multiple": 2.2,
-      "trigger": "sigma",
-      "message": "日本国债 2Y 单日上行 3.9bp（2.2σ），至 1.696%"
-    }
-  ]
+  "alerts": []
 }
