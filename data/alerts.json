@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T08:50:22.948157+00:00",
+  "generated_at": "2026-08-20T08:52:10.710578+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,17 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 30Y",
+      "value_bp": -9.0,
+      "sigma_bp": 3.84,
+      "sigma_multiple": 2.3,
+      "trigger": "sigma",
+      "message": "美国国债 30Y 单日下行 9.0bp（2.3σ），至 5.190%"
+    }
+  ]
 }
