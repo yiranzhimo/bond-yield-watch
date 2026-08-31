@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-28T20:10:26.038001+00:00",
+  "generated_at": "2026-08-31T16:07:18.661176+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,39 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 2Y",
+      "value_bp": 14.0,
+      "sigma_bp": 5.06,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "美国国债 2Y 单日上行 14.0bp（2.8σ），至 4.340%"
+    },
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN2Y_US2Y",
+      "value_bp": -13.9,
+      "sigma_bp": 5.18,
+      "sigma_multiple": 2.7,
+      "trigger": "sigma",
+      "message": "中美 2Y 利差单日收窄 13.9bp（2.7σ），至 -308.5bp"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 5Y",
+      "value_bp": 10.0,
+      "sigma_bp": 4.83,
+      "sigma_multiple": 2.1,
+      "trigger": "sigma",
+      "message": "美国国债 5Y 单日上行 10.0bp（2.1σ），至 4.480%"
+    }
+  ]
 }
