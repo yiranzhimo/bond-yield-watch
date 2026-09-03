@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T12:44:02.146396+00:00",
+  "generated_at": "2026-09-03T12:47:08.215090+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -16,48 +16,48 @@
   },
   "alerts": [
     {
-      "severity": "high",
+      "severity": "medium",
+      "market": "JP",
+      "kind": "weekly_move",
+      "metric": "JP 5Y",
+      "value_bp": 16.0,
+      "sigma_bp": 5.32,
+      "sigma_multiple": 3.0,
+      "trigger": "sigma",
+      "message": "日本国债 5Y 一周累计上行 16.0bp（3.0σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "weekly_move",
+      "metric": "JP 2Y",
+      "value_bp": 15.7,
+      "sigma_bp": 4.19,
+      "sigma_multiple": 3.7,
+      "trigger": "sigma",
+      "message": "日本国债 2Y 一周累计上行 15.7bp（3.7σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "daily_move",
+      "metric": "JP 2Y",
+      "value_bp": 5.2,
+      "sigma_bp": 1.86,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "日本国债 2Y 单日上行 5.2bp（2.8σ），至 1.854%"
+    },
+    {
+      "severity": "medium",
       "market": "JP",
       "kind": "daily_move",
-      "metric": "JP 2Y",
-      "value_bp": 5.9,
-      "sigma_bp": 1.77,
-      "sigma_multiple": 3.3,
+      "metric": "JP 5Y",
+      "value_bp": 5.2,
+      "sigma_bp": 2.55,
+      "sigma_multiple": 2.0,
       "trigger": "sigma",
-      "message": "日本国债 2Y 单日上行 5.9bp（3.3σ），至 1.802%"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "weekly_move",
-      "metric": "US 2Y",
-      "value_bp": 22.0,
-      "sigma_bp": 8.59,
-      "sigma_multiple": 2.6,
-      "trigger": "sigma",
-      "message": "美国国债 2Y 一周累计上行 22.0bp（2.6σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "weekly_move",
-      "metric": "US 5Y",
-      "value_bp": 20.0,
-      "sigma_bp": 7.92,
-      "sigma_multiple": 2.5,
-      "trigger": "sigma",
-      "message": "美国国债 5Y 一周累计上行 20.0bp（2.5σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "weekly_move",
-      "metric": "JP 2Y",
-      "value_bp": 11.8,
-      "sigma_bp": 3.85,
-      "sigma_multiple": 3.1,
-      "trigger": "sigma",
-      "message": "日本国债 2Y 一周累计上行 11.8bp（3.1σ）"
+      "message": "日本国债 5Y 单日上行 5.2bp（2.0σ），至 2.332%"
     }
   ]
 }
