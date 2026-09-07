@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T12:41:05.822262+00:00",
+  "generated_at": "2026-09-07T14:12:40.990910+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -18,13 +18,24 @@
     {
       "severity": "medium",
       "market": "JP",
-      "kind": "weekly_move",
-      "metric": "JP 2Y",
-      "value_bp": 15.4,
-      "sigma_bp": 4.49,
-      "sigma_multiple": 3.4,
+      "kind": "daily_move",
+      "metric": "JP 30Y",
+      "value_bp": -8.7,
+      "sigma_bp": 4.03,
+      "sigma_multiple": 2.2,
       "trigger": "sigma",
-      "message": "日本国债 2Y 一周累计上行 15.4bp（3.4σ）"
+      "message": "日本国债 30Y 单日下行 8.7bp（2.2σ），至 3.965%"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "daily_move",
+      "metric": "JP 5Y",
+      "value_bp": -5.3,
+      "sigma_bp": 2.68,
+      "sigma_multiple": 2.0,
+      "trigger": "sigma",
+      "message": "日本国债 5Y 单日下行 5.3bp（2.0σ），至 2.250%"
     }
   ]
 }
