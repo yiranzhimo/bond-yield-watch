@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T12:53:00.406819+00:00",
+  "generated_at": "2026-09-11T12:47:37.477677+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,105 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "weekly_move",
+      "metric": "US 5Y",
+      "value_bp": 23.0,
+      "sigma_bp": 8.23,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "美国国债 5Y 一周累计上行 23.0bp（2.8σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "weekly_move",
+      "metric": "US 2Y",
+      "value_bp": 22.0,
+      "sigma_bp": 8.95,
+      "sigma_multiple": 2.5,
+      "trigger": "sigma",
+      "message": "美国国债 2Y 一周累计上行 22.0bp（2.5σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "weekly_move",
+      "metric": "US 10Y",
+      "value_bp": 18.0,
+      "sigma_bp": 7.02,
+      "sigma_multiple": 2.6,
+      "trigger": "sigma",
+      "message": "美国国债 10Y 一周累计上行 18.0bp（2.6σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 5Y",
+      "value_bp": 14.0,
+      "sigma_bp": 4.81,
+      "sigma_multiple": 2.9,
+      "trigger": "sigma",
+      "message": "美国国债 5Y 单日上行 14.0bp（2.9σ），至 4.750%"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 2Y",
+      "value_bp": 13.0,
+      "sigma_bp": 5.01,
+      "sigma_multiple": 2.6,
+      "trigger": "sigma",
+      "message": "美国国债 2Y 单日上行 13.0bp（2.6σ），至 4.560%"
+    },
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN2Y_US2Y",
+      "value_bp": -12.9,
+      "sigma_bp": 5.07,
+      "sigma_multiple": 2.5,
+      "trigger": "sigma",
+      "message": "中美 2Y 利差单日收窄 12.9bp（2.5σ），至 -331.8bp"
+    },
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN10Y_US10Y",
+      "value_bp": -12.2,
+      "sigma_bp": 4.3,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "中美 10Y 利差单日收窄 12.2bp（2.8σ），至 -327.0bp"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 10Y",
+      "value_bp": 12.0,
+      "sigma_bp": 4.33,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "美国国债 10Y 单日上行 12.0bp（2.8σ），至 4.950%"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 30Y",
+      "value_bp": 9.0,
+      "sigma_bp": 3.93,
+      "sigma_multiple": 2.3,
+      "trigger": "sigma",
+      "message": "美国国债 30Y 单日上行 9.0bp（2.3σ），至 5.370%"
+    }
+  ]
 }
