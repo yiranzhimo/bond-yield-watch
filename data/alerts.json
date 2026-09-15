@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T14:58:25.116235+00:00",
+  "generated_at": "2026-09-15T13:28:10.909176+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -20,55 +20,33 @@
       "market": "US",
       "kind": "weekly_move",
       "metric": "US 2Y",
-      "value_bp": 26.0,
-      "sigma_bp": 9.46,
-      "sigma_multiple": 2.7,
+      "value_bp": 28.0,
+      "sigma_bp": 9.97,
+      "sigma_multiple": 2.8,
       "trigger": "sigma",
-      "message": "美国国债 2Y 一周累计上行 26.0bp（2.7σ）"
+      "message": "美国国债 2Y 一周累计上行 28.0bp（2.8σ）"
     },
     {
       "severity": "medium",
       "market": "US",
       "kind": "weekly_move",
       "metric": "US 5Y",
-      "value_bp": 24.0,
-      "sigma_bp": 8.56,
-      "sigma_multiple": 2.8,
+      "value_bp": 26.0,
+      "sigma_bp": 9.02,
+      "sigma_multiple": 2.9,
       "trigger": "sigma",
-      "message": "美国国债 5Y 一周累计上行 24.0bp（2.8σ）"
+      "message": "美国国债 5Y 一周累计上行 26.0bp（2.9σ）"
     },
     {
       "severity": "medium",
       "market": "US",
       "kind": "weekly_move",
       "metric": "US 10Y",
-      "value_bp": 18.0,
-      "sigma_bp": 7.13,
-      "sigma_multiple": 2.5,
+      "value_bp": 19.0,
+      "sigma_bp": 7.31,
+      "sigma_multiple": 2.6,
       "trigger": "sigma",
-      "message": "美国国债 10Y 一周累计上行 18.0bp（2.5σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "daily_move",
-      "metric": "JP 10Y",
-      "value_bp": 6.7,
-      "sigma_bp": 3.36,
-      "sigma_multiple": 2.0,
-      "trigger": "sigma",
-      "message": "日本国债 10Y 单日上行 6.7bp（2.0σ），至 2.987%"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "daily_move",
-      "metric": "JP 5Y",
-      "value_bp": 5.2,
-      "sigma_bp": 2.55,
-      "sigma_multiple": 2.0,
-      "trigger": "sigma",
-      "message": "日本国债 5Y 单日上行 5.2bp（2.0σ），至 2.296%"
+      "message": "美国国债 10Y 一周累计上行 19.0bp（2.6σ）"
     }
   ]
 }
