@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T13:28:10.909176+00:00",
+  "generated_at": "2026-09-16T13:26:44.834607+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -21,10 +21,10 @@
       "kind": "weekly_move",
       "metric": "US 2Y",
       "value_bp": 28.0,
-      "sigma_bp": 9.97,
-      "sigma_multiple": 2.8,
+      "sigma_bp": 10.37,
+      "sigma_multiple": 2.7,
       "trigger": "sigma",
-      "message": "美国国债 2Y 一周累计上行 28.0bp（2.8σ）"
+      "message": "美国国债 2Y 一周累计上行 28.0bp（2.7σ）"
     },
     {
       "severity": "medium",
@@ -32,21 +32,21 @@
       "kind": "weekly_move",
       "metric": "US 5Y",
       "value_bp": 26.0,
-      "sigma_bp": 9.02,
-      "sigma_multiple": 2.9,
+      "sigma_bp": 9.45,
+      "sigma_multiple": 2.8,
       "trigger": "sigma",
-      "message": "美国国债 5Y 一周累计上行 26.0bp（2.9σ）"
+      "message": "美国国债 5Y 一周累计上行 26.0bp（2.8σ）"
     },
     {
       "severity": "medium",
       "market": "US",
       "kind": "weekly_move",
       "metric": "US 10Y",
-      "value_bp": 19.0,
-      "sigma_bp": 7.31,
+      "value_bp": 20.0,
+      "sigma_bp": 7.6,
       "sigma_multiple": 2.6,
       "trigger": "sigma",
-      "message": "美国国债 10Y 一周累计上行 19.0bp（2.6σ）"
+      "message": "美国国债 10Y 一周累计上行 20.0bp（2.6σ）"
     }
   ]
 }
