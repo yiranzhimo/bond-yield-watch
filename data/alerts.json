@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T13:35:19.422960+00:00",
+  "generated_at": "2026-09-24T13:30:24.340989+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -16,13 +16,101 @@
   },
   "alerts": [
     {
+      "severity": "high",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 5Y",
+      "value_bp": 16.0,
+      "sigma_bp": 4.91,
+      "sigma_multiple": 3.3,
+      "trigger": "both",
+      "message": "美国国债 5Y 单日上行 16.0bp（3.3σ，超绝对阈值），至 4.990%"
+    },
+    {
+      "severity": "high",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 10Y",
+      "value_bp": 15.0,
+      "sigma_bp": 4.59,
+      "sigma_multiple": 3.3,
+      "trigger": "both",
+      "message": "美国国债 10Y 单日上行 15.0bp（3.3σ，超绝对阈值），至 5.110%"
+    },
+    {
+      "severity": "high",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN10Y_US10Y",
+      "value_bp": -14.8,
+      "sigma_bp": 4.57,
+      "sigma_multiple": 3.2,
+      "trigger": "sigma",
+      "message": "中美 10Y 利差单日收窄 14.8bp（3.2σ），至 -342.9bp"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 2Y",
+      "value_bp": 14.0,
+      "sigma_bp": 5.08,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "美国国债 2Y 单日上行 14.0bp（2.8σ），至 4.850%"
+    },
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN2Y_US2Y",
+      "value_bp": -13.7,
+      "sigma_bp": 5.05,
+      "sigma_multiple": 2.7,
+      "trigger": "sigma",
+      "message": "中美 2Y 利差单日收窄 13.7bp（2.7σ），至 -358.2bp"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 30Y",
+      "value_bp": 11.0,
+      "sigma_bp": 4.1,
+      "sigma_multiple": 2.7,
+      "trigger": "sigma",
+      "message": "美国国债 30Y 单日上行 11.0bp（2.7σ），至 5.400%"
+    },
+    {
+      "severity": "medium",
+      "market": "CN",
+      "kind": "weekly_move",
+      "metric": "CN 30Y",
+      "value_bp": -5.8,
+      "sigma_bp": 2.06,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "中国国债 30Y 一周累计下行 5.8bp（2.8σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 30Y",
+      "value_bp": -2.8,
+      "sigma_bp": 0.96,
+      "sigma_multiple": 2.9,
+      "trigger": "sigma",
+      "message": "中国国债 30Y 单日下行 2.8bp（2.9σ），至 2.082%"
+    },
+    {
       "severity": "medium",
       "market": "JP",
       "kind": "stale_data",
       "metric": "JP 数据",
       "value_bp": null,
       "age_days": 6,
-      "message": "日本国债最新数据为 2026-09-17,已 6 天未更新,疑似数据源中断而非市场休市"
+      "message": "日本国债最新数据为 2026-09-18,已 6 天未更新,疑似数据源中断而非市场休市"
     }
   ]
 }
