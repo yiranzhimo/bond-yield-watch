@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T16:43:14.586352+00:00",
+  "generated_at": "2026-09-29T14:48:59.983509+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -17,14 +17,69 @@
   "alerts": [
     {
       "severity": "medium",
-      "market": "CROSS",
-      "kind": "spread_move",
-      "metric": "CN10Y_JP10Y",
-      "value_bp": -10.0,
-      "sigma_bp": 3.64,
-      "sigma_multiple": 2.7,
+      "market": "US",
+      "kind": "weekly_move",
+      "metric": "US 10Y",
+      "value_bp": 28.0,
+      "sigma_bp": 8.13,
+      "sigma_multiple": 3.4,
       "trigger": "sigma",
-      "message": "中日 10Y 利差单日收窄 10.0bp（2.7σ），至 -139.9bp"
+      "message": "美国国债 10Y 一周累计上行 28.0bp（3.4σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "weekly_move",
+      "metric": "US 30Y",
+      "value_bp": 27.0,
+      "sigma_bp": 7.29,
+      "sigma_multiple": 3.7,
+      "trigger": "sigma",
+      "message": "美国国债 30Y 一周累计上行 27.0bp（3.7σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "weekly_move",
+      "metric": "JP 5Y",
+      "value_bp": 13.6,
+      "sigma_bp": 5.47,
+      "sigma_multiple": 2.5,
+      "trigger": "sigma",
+      "message": "日本国债 5Y 一周累计上行 13.6bp（2.5σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "weekly_move",
+      "metric": "JP 2Y",
+      "value_bp": 13.2,
+      "sigma_bp": 4.76,
+      "sigma_multiple": 2.8,
+      "trigger": "sigma",
+      "message": "日本国债 2Y 一周累计上行 13.2bp（2.8σ）"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 2Y",
+      "value_bp": 11.0,
+      "sigma_bp": 5.28,
+      "sigma_multiple": 2.1,
+      "trigger": "sigma",
+      "message": "美国国债 2Y 单日上行 11.0bp（2.1σ），至 4.920%"
+    },
+    {
+      "severity": "medium",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 30Y",
+      "value_bp": -2.3,
+      "sigma_bp": 1.0,
+      "sigma_multiple": 2.3,
+      "trigger": "sigma",
+      "message": "中国国债 30Y 单日下行 2.3bp（2.3σ），至 2.074%"
     }
   ]
 }
