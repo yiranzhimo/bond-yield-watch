@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T17:05:05.999767+00:00",
+  "generated_at": "2026-10-06T15:02:49.576037+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -32,8 +32,8 @@
       "kind": "stale_data",
       "metric": "CN 数据",
       "value_bp": null,
-      "age_days": 5,
-      "message": "中国国债最新数据为 2026-09-30,已 5 天未更新,疑似数据源中断而非市场休市"
+      "age_days": 6,
+      "message": "中国国债最新数据为 2026-09-30,已 6 天未更新,疑似数据源中断而非市场休市"
     }
   ]
 }
