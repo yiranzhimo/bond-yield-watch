@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T15:31:42.612166+00:00",
+  "generated_at": "2026-10-09T15:13:57.673416+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,17 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN2Y_US2Y",
+      "value_bp": 13.4,
+      "sigma_bp": 5.37,
+      "sigma_multiple": 2.5,
+      "trigger": "sigma",
+      "message": "中美 2Y 利差单日走阔 13.4bp（2.5σ），至 -347.9bp"
+    }
+  ]
 }
