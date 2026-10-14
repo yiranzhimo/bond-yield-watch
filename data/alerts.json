@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-13T15:53:23.089896+00:00",
+  "generated_at": "2026-10-14T13:38:19.039097+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,35 +14,5 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": [
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "daily_move",
-      "metric": "JP 10Y",
-      "value_bp": -6.2,
-      "sigma_bp": 3.17,
-      "sigma_multiple": 2.0,
-      "trigger": "sigma",
-      "message": "日本国债 10Y 单日下行 6.2bp（2.0σ），至 3.027%"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "stale_data",
-      "metric": "US 数据",
-      "value_bp": null,
-      "age_days": 4,
-      "message": "美国国债最新数据为 2026-10-09,已 4 天未更新,疑似数据源中断而非市场休市"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "stale_data",
-      "metric": "JP 数据",
-      "value_bp": null,
-      "age_days": 4,
-      "message": "日本国债最新数据为 2026-10-09,已 4 天未更新,疑似数据源中断而非市场休市"
-    }
-  ]
+  "alerts": []
 }
