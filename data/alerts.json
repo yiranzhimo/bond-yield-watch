@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T15:31:26.466764+00:00",
+  "generated_at": "2026-10-20T13:31:13.630721+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,28 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "high",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 5Y",
+      "value_bp": -2.9,
+      "sigma_bp": 0.74,
+      "sigma_multiple": 3.9,
+      "trigger": "sigma",
+      "message": "中国国债 5Y 单日下行 2.9bp（3.9σ），至 1.348%"
+    },
+    {
+      "severity": "medium",
+      "market": "CN",
+      "kind": "weekly_move",
+      "metric": "CN 5Y",
+      "value_bp": -5.0,
+      "sigma_bp": 1.51,
+      "sigma_multiple": 3.3,
+      "trigger": "sigma",
+      "message": "中国国债 5Y 一周累计下行 5.0bp（3.3σ）"
+    }
+  ]
 }
