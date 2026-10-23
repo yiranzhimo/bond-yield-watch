@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T13:43:12.113920+00:00",
+  "generated_at": "2026-10-23T13:19:54.598893+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,83 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "high",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 5Y",
+      "value_bp": -17.0,
+      "sigma_bp": 5.5,
+      "sigma_multiple": 3.1,
+      "trigger": "both",
+      "message": "美国国债 5Y 单日下行 17.0bp（3.1σ，超绝对阈值），至 4.780%"
+    },
+    {
+      "severity": "high",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 10Y",
+      "value_bp": -17.0,
+      "sigma_bp": 5.33,
+      "sigma_multiple": 3.2,
+      "trigger": "both",
+      "message": "美国国债 10Y 单日下行 17.0bp（3.2σ，超绝对阈值），至 4.960%"
+    },
+    {
+      "severity": "high",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN10Y_US10Y",
+      "value_bp": 17.0,
+      "sigma_bp": 5.41,
+      "sigma_multiple": 3.1,
+      "trigger": "both",
+      "message": "中美 10Y 利差单日走阔 17.0bp（3.1σ，超绝对阈值），至 -331.9bp"
+    },
+    {
+      "severity": "high",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "JP10Y_US10Y",
+      "value_bp": 16.1,
+      "sigma_bp": 5.58,
+      "sigma_multiple": 2.9,
+      "trigger": "both",
+      "message": "日美 10Y 利差单日走阔 16.1bp（2.9σ，超绝对阈值），至 -204.6bp"
+    },
+    {
+      "severity": "high",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 2Y",
+      "value_bp": -16.0,
+      "sigma_bp": 5.64,
+      "sigma_multiple": 2.8,
+      "trigger": "both",
+      "message": "美国国债 2Y 单日下行 16.0bp（2.8σ，超绝对阈值），至 4.650%"
+    },
+    {
+      "severity": "high",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN2Y_US2Y",
+      "value_bp": 15.6,
+      "sigma_bp": 5.61,
+      "sigma_multiple": 2.8,
+      "trigger": "both",
+      "message": "中美 2Y 利差单日走阔 15.6bp（2.8σ，超绝对阈值），至 -340.4bp"
+    },
+    {
+      "severity": "medium",
+      "market": "US",
+      "kind": "daily_move",
+      "metric": "US 30Y",
+      "value_bp": -13.0,
+      "sigma_bp": 4.87,
+      "sigma_multiple": 2.7,
+      "trigger": "sigma",
+      "message": "美国国债 30Y 单日下行 13.0bp（2.7σ），至 5.290%"
+    }
+  ]
 }
