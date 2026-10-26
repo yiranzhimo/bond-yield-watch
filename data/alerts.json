@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T13:19:54.598893+00:00",
+  "generated_at": "2026-10-26T15:06:58.508205+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -16,81 +16,48 @@
   },
   "alerts": [
     {
-      "severity": "high",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 5Y",
-      "value_bp": -17.0,
-      "sigma_bp": 5.5,
-      "sigma_multiple": 3.1,
-      "trigger": "both",
-      "message": "美国国债 5Y 单日下行 17.0bp（3.1σ，超绝对阈值），至 4.780%"
-    },
-    {
-      "severity": "high",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 10Y",
-      "value_bp": -17.0,
-      "sigma_bp": 5.33,
-      "sigma_multiple": 3.2,
-      "trigger": "both",
-      "message": "美国国债 10Y 单日下行 17.0bp（3.2σ，超绝对阈值），至 4.960%"
-    },
-    {
-      "severity": "high",
-      "market": "CROSS",
-      "kind": "spread_move",
-      "metric": "CN10Y_US10Y",
-      "value_bp": 17.0,
-      "sigma_bp": 5.41,
-      "sigma_multiple": 3.1,
-      "trigger": "both",
-      "message": "中美 10Y 利差单日走阔 17.0bp（3.1σ，超绝对阈值），至 -331.9bp"
-    },
-    {
-      "severity": "high",
+      "severity": "medium",
       "market": "CROSS",
       "kind": "spread_move",
       "metric": "JP10Y_US10Y",
-      "value_bp": 16.1,
-      "sigma_bp": 5.58,
-      "sigma_multiple": 2.9,
-      "trigger": "both",
-      "message": "日美 10Y 利差单日走阔 16.1bp（2.9σ，超绝对阈值），至 -204.6bp"
-    },
-    {
-      "severity": "high",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 2Y",
-      "value_bp": -16.0,
-      "sigma_bp": 5.64,
-      "sigma_multiple": 2.8,
-      "trigger": "both",
-      "message": "美国国债 2Y 单日下行 16.0bp（2.8σ，超绝对阈值），至 4.650%"
-    },
-    {
-      "severity": "high",
-      "market": "CROSS",
-      "kind": "spread_move",
-      "metric": "CN2Y_US2Y",
-      "value_bp": 15.6,
-      "sigma_bp": 5.61,
-      "sigma_multiple": 2.8,
-      "trigger": "both",
-      "message": "中美 2Y 利差单日走阔 15.6bp（2.8σ，超绝对阈值），至 -340.4bp"
+      "value_bp": -11.7,
+      "sigma_bp": 5.78,
+      "sigma_multiple": 2.0,
+      "trigger": "sigma",
+      "message": "日美 10Y 利差单日收窄 11.7bp（2.0σ），至 -216.3bp"
     },
     {
       "severity": "medium",
-      "market": "US",
+      "market": "JP",
       "kind": "daily_move",
-      "metric": "US 30Y",
-      "value_bp": -13.0,
-      "sigma_bp": 4.87,
-      "sigma_multiple": 2.7,
+      "metric": "JP 10Y",
+      "value_bp": -7.7,
+      "sigma_bp": 3.25,
+      "sigma_multiple": 2.4,
       "trigger": "sigma",
-      "message": "美国国债 30Y 单日下行 13.0bp（2.7σ），至 5.290%"
+      "message": "日本国债 10Y 单日下行 7.7bp（2.4σ），至 2.837%"
+    },
+    {
+      "severity": "medium",
+      "market": "CROSS",
+      "kind": "spread_move",
+      "metric": "CN10Y_JP10Y",
+      "value_bp": 7.6,
+      "sigma_bp": 3.44,
+      "sigma_multiple": 2.2,
+      "trigger": "sigma",
+      "message": "中日 10Y 利差单日走阔 7.6bp（2.2σ），至 -119.7bp"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "daily_move",
+      "metric": "JP 5Y",
+      "value_bp": -6.6,
+      "sigma_bp": 2.94,
+      "sigma_multiple": 2.2,
+      "trigger": "sigma",
+      "message": "日本国债 5Y 单日下行 6.6bp（2.2σ），至 2.238%"
     }
   ]
 }
