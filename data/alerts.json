@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T15:10:42.646480+00:00",
+  "generated_at": "2026-10-30T14:59:41.196962+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,5 +14,50 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": []
+  "alerts": [
+    {
+      "severity": "high",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 30Y",
+      "value_bp": 3.6,
+      "sigma_bp": 1.12,
+      "sigma_multiple": 3.2,
+      "trigger": "sigma",
+      "message": "中国国债 30Y 单日上行 3.6bp（3.2σ），至 2.083%"
+    },
+    {
+      "severity": "high",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 10Y",
+      "value_bp": 2.7,
+      "sigma_bp": 0.74,
+      "sigma_multiple": 3.6,
+      "trigger": "sigma",
+      "message": "中国国债 10Y 单日上行 2.7bp（3.6σ），至 1.650%"
+    },
+    {
+      "severity": "high",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 2Y",
+      "value_bp": 2.4,
+      "sigma_bp": 0.63,
+      "sigma_multiple": 3.8,
+      "trigger": "sigma",
+      "message": "中国国债 2Y 单日上行 2.4bp（3.8σ），至 1.246%"
+    },
+    {
+      "severity": "high",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 5Y",
+      "value_bp": 2.3,
+      "sigma_bp": 0.76,
+      "sigma_multiple": 3.0,
+      "trigger": "sigma",
+      "message": "中国国债 5Y 单日上行 2.3bp（3.0σ），至 1.353%"
+    }
+  ]
 }
