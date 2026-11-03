@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T18:13:05.103030+00:00",
+  "generated_at": "2026-11-03T16:07:04.776104+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -25,6 +25,15 @@
       "sigma_multiple": 2.4,
       "trigger": "sigma",
       "message": "中日 10Y 利差单日走阔 8.6bp（2.4σ），至 -116.7bp"
+    },
+    {
+      "severity": "medium",
+      "market": "JP",
+      "kind": "stale_data",
+      "metric": "JP 数据",
+      "value_bp": null,
+      "age_days": 4,
+      "message": "日本国债最新数据为 2026-10-30,已 4 天未更新,疑似数据源中断而非市场休市"
     }
   ]
 }
