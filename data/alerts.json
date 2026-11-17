@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T18:22:12.806551+00:00",
+  "generated_at": "2026-11-17T17:33:38.669396+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -16,81 +16,37 @@
   },
   "alerts": [
     {
-      "severity": "high",
-      "market": "US",
-      "kind": "weekly_move",
-      "metric": "US 2Y",
-      "value_bp": 37.0,
-      "sigma_bp": 12.9,
-      "sigma_multiple": 2.9,
-      "trigger": "both",
-      "message": "美国国债 2Y 一周累计上行 37.0bp（2.9σ，超绝对阈值）"
+      "severity": "medium",
+      "market": "CN",
+      "kind": "daily_move",
+      "metric": "CN 30Y",
+      "value_bp": -2.5,
+      "sigma_bp": 1.2,
+      "sigma_multiple": 2.1,
+      "trigger": "sigma",
+      "message": "中国国债 30Y 单日下行 2.5bp（2.1σ），至 2.057%"
     },
     {
-      "severity": "high",
+      "severity": "medium",
       "market": "CN",
       "kind": "daily_move",
       "metric": "CN 5Y",
-      "value_bp": 2.8,
-      "sigma_bp": 0.91,
-      "sigma_multiple": 3.1,
+      "value_bp": -2.3,
+      "sigma_bp": 0.95,
+      "sigma_multiple": 2.4,
       "trigger": "sigma",
-      "message": "中国国债 5Y 单日上行 2.8bp（3.1σ），至 1.358%"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "weekly_move",
-      "metric": "US 5Y",
-      "value_bp": 34.0,
-      "sigma_bp": 13.07,
-      "sigma_multiple": 2.6,
-      "trigger": "sigma",
-      "message": "美国国债 5Y 一周累计上行 34.0bp（2.6σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "weekly_move",
-      "metric": "JP 10Y",
-      "value_bp": 20.3,
-      "sigma_bp": 8.1,
-      "sigma_multiple": 2.5,
-      "trigger": "sigma",
-      "message": "日本国债 10Y 一周累计上行 20.3bp（2.5σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "weekly_move",
-      "metric": "JP 5Y",
-      "value_bp": 19.2,
-      "sigma_bp": 7.66,
-      "sigma_multiple": 2.5,
-      "trigger": "sigma",
-      "message": "日本国债 5Y 一周累计上行 19.2bp（2.5σ）"
+      "message": "中国国债 5Y 单日下行 2.3bp（2.4σ），至 1.335%"
     },
     {
       "severity": "medium",
       "market": "CN",
-      "kind": "weekly_move",
-      "metric": "CN 30Y",
-      "value_bp": 5.4,
-      "sigma_bp": 2.1,
+      "kind": "daily_move",
+      "metric": "CN 10Y",
+      "value_bp": -2.3,
+      "sigma_bp": 0.89,
       "sigma_multiple": 2.6,
       "trigger": "sigma",
-      "message": "中国国债 30Y 一周累计上行 5.4bp（2.6σ）"
-    },
-    {
-      "severity": "medium",
-      "market": "CN",
-      "kind": "weekly_move",
-      "metric": "CN 5Y",
-      "value_bp": 5.3,
-      "sigma_bp": 1.86,
-      "sigma_multiple": 2.8,
-      "trigger": "sigma",
-      "message": "中国国债 5Y 一周累计上行 5.3bp（2.8σ）"
+      "message": "中国国债 10Y 单日下行 2.3bp（2.6σ），至 1.605%"
     }
   ]
 }
