@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-23T20:05:30.839403+00:00",
-  "updated_at": "2026-11-23T20:05:30.839403+00:00",
+  "generated_at": "2026-11-24T19:28:07.835687+00:00",
+  "updated_at": "2026-11-24T19:28:07.835687+00:00",
   "tenors": [
     "2Y",
     "5Y",
@@ -14,63 +14,63 @@
       "currency": "CNY",
       "source": "东方财富数据中心",
       "source_url": "https://data.eastmoney.com/cjsj/zmgzsyl.html",
-      "as_of": "2026-11-23",
+      "as_of": "2026-11-24",
       "tenors": {
         "2Y": {
-          "yield": 1.2351,
-          "as_of": "2026-11-23",
+          "yield": 1.2304,
+          "as_of": "2026-11-24",
           "stale": false,
-          "change_1d_bp": 0.2,
-          "change_1w_bp": -0.5,
-          "change_1m_bp": -1.0,
-          "change_3m_bp": 0.2,
-          "change_1y_bp": -19.5,
-          "percentile_2y": 9.9,
-          "daily_sigma_bp": 0.66,
-          "weekly_sigma_bp": 1.3,
-          "last_gap_days": 3
+          "change_1d_bp": -0.5,
+          "change_1w_bp": 0.0,
+          "change_1m_bp": -1.5,
+          "change_3m_bp": -0.6,
+          "change_1y_bp": -20.1,
+          "percentile_2y": 8.9,
+          "daily_sigma_bp": 0.64,
+          "weekly_sigma_bp": 1.26,
+          "last_gap_days": 1
         },
         "5Y": {
-          "yield": 1.3262,
-          "as_of": "2026-11-23",
+          "yield": 1.3259,
+          "as_of": "2026-11-24",
           "stale": false,
-          "change_1d_bp": 0.0,
-          "change_1w_bp": -3.2,
+          "change_1d_bp": -0.0,
+          "change_1w_bp": -0.9,
           "change_1m_bp": -2.7,
-          "change_3m_bp": -5.9,
-          "change_1y_bp": -26.4,
-          "percentile_2y": 1.6,
-          "daily_sigma_bp": 0.95,
-          "weekly_sigma_bp": 1.93,
-          "last_gap_days": 3
+          "change_3m_bp": -6.1,
+          "change_1y_bp": -26.8,
+          "percentile_2y": 1.2,
+          "daily_sigma_bp": 0.94,
+          "weekly_sigma_bp": 1.92,
+          "last_gap_days": 1
         },
         "10Y": {
-          "yield": 1.5861,
-          "as_of": "2026-11-23",
+          "yield": 1.5853,
+          "as_of": "2026-11-24",
           "stale": false,
-          "change_1d_bp": 0.6,
-          "change_1w_bp": -4.2,
-          "change_1m_bp": -5.4,
-          "change_3m_bp": -9.3,
-          "change_1y_bp": -23.0,
+          "change_1d_bp": -0.1,
+          "change_1w_bp": -2.0,
+          "change_1m_bp": -5.5,
+          "change_3m_bp": -9.6,
+          "change_1y_bp": -23.6,
           "percentile_2y": 0.6,
-          "daily_sigma_bp": 0.94,
+          "daily_sigma_bp": 0.93,
           "weekly_sigma_bp": 1.8,
-          "last_gap_days": 3
+          "last_gap_days": 1
         },
         "30Y": {
-          "yield": 2.0499,
-          "as_of": "2026-11-23",
+          "yield": 2.045,
+          "as_of": "2026-11-24",
           "stale": false,
-          "change_1d_bp": 0.8,
-          "change_1w_bp": -3.2,
-          "change_1m_bp": -1.8,
-          "change_3m_bp": -7.2,
-          "change_1y_bp": -10.8,
-          "percentile_2y": 34.7,
+          "change_1d_bp": -0.5,
+          "change_1w_bp": -1.2,
+          "change_1m_bp": -2.2,
+          "change_3m_bp": -8.4,
+          "change_1y_bp": -11.4,
+          "percentile_2y": 34.1,
           "daily_sigma_bp": 1.21,
           "weekly_sigma_bp": 2.04,
-          "last_gap_days": 3
+          "last_gap_days": 1
         }
       },
       "history_curves": {
@@ -84,20 +84,16 @@
           }
         },
         "1y": {
-          "as_of": "2025-11-21",
+          "as_of": "2025-11-24",
           "tenors": {
-            "2Y": 1.4303,
-            "5Y": 1.5907,
-            "10Y": 1.8166,
-            "30Y": 2.1576
+            "2Y": 1.4313,
+            "5Y": 1.5944,
+            "10Y": 1.821,
+            "30Y": 2.1586
           }
         }
       },
       "ten_year_history": [
-        [
-          "2024-10-21",
-          2.1211
-        ],
         [
           "2024-10-22",
           2.1458
@@ -2173,22 +2169,26 @@
         [
           "2026-11-23",
           1.5861
+        ],
+        [
+          "2026-11-24",
+          1.5853
         ]
       ],
       "term_structure": {
-        "spread_10y_2y_bp": 35.1,
-        "spread_30y_10y_bp": 46.4,
-        "spread_10y_5y_bp": 26.0,
+        "spread_10y_2y_bp": 35.5,
+        "spread_30y_10y_bp": 46.0,
+        "spread_10y_5y_bp": 25.9,
         "shape": "normal",
         "inverted": false
       },
       "temperature": {
-        "score": 28.2,
+        "score": 28.0,
         "level": "cool",
         "components": {
-          "level_percentile": 11.7,
-          "curve_slope": 45.0,
-          "momentum_1m": 44.6,
+          "level_percentile": 11.2,
+          "curve_slope": 45.2,
+          "momentum_1m": 44.5,
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
@@ -2200,90 +2200,86 @@
       "currency": "USD",
       "source": "东方财富数据中心 / FRED 交叉校验",
       "source_url": "https://fred.stlouisfed.org/categories/115",
-      "as_of": "2026-11-20",
+      "as_of": "2026-11-23",
       "tenors": {
         "2Y": {
           "yield": 4.63,
-          "as_of": "2026-11-20",
+          "as_of": "2026-11-23",
           "stale": false,
-          "change_1d_bp": -13.0,
-          "change_1w_bp": -25.0,
-          "change_1m_bp": -18.0,
+          "change_1d_bp": 0.0,
+          "change_1w_bp": -20.0,
+          "change_1m_bp": -6.0,
           "change_3m_bp": 39.0,
-          "change_1y_bp": 108.0,
+          "change_1y_bp": 112.0,
           "percentile_2y": 92.3,
           "daily_sigma_bp": 6.55,
-          "weekly_sigma_bp": 14.24,
-          "last_gap_days": 1
+          "weekly_sigma_bp": 14.58,
+          "last_gap_days": 3
         },
         "5Y": {
-          "yield": 4.71,
-          "as_of": "2026-11-20",
+          "yield": 4.74,
+          "as_of": "2026-11-23",
           "stale": false,
-          "change_1d_bp": -15.0,
-          "change_1w_bp": -27.0,
-          "change_1m_bp": -24.0,
-          "change_3m_bp": 28.0,
-          "change_1y_bp": 103.0,
-          "percentile_2y": 91.5,
+          "change_1d_bp": 3.0,
+          "change_1w_bp": -19.0,
+          "change_1m_bp": -8.0,
+          "change_3m_bp": 33.0,
+          "change_1y_bp": 112.0,
+          "percentile_2y": 91.7,
           "daily_sigma_bp": 6.37,
-          "weekly_sigma_bp": 14.33,
-          "last_gap_days": 1
+          "weekly_sigma_bp": 14.63,
+          "last_gap_days": 3
         },
         "10Y": {
           "yield": 4.92,
-          "as_of": "2026-11-20",
+          "as_of": "2026-11-23",
           "stale": false,
-          "change_1d_bp": -12.0,
-          "change_1w_bp": -23.0,
-          "change_1m_bp": -21.0,
-          "change_3m_bp": 18.0,
-          "change_1y_bp": 82.0,
+          "change_1d_bp": 0.0,
+          "change_1w_bp": -20.0,
+          "change_1m_bp": -8.0,
+          "change_3m_bp": 22.0,
+          "change_1y_bp": 86.0,
           "percentile_2y": 91.3,
-          "daily_sigma_bp": 5.64,
-          "weekly_sigma_bp": 13.24,
-          "last_gap_days": 1
+          "daily_sigma_bp": 5.63,
+          "weekly_sigma_bp": 13.57,
+          "last_gap_days": 3
         },
         "30Y": {
-          "yield": 5.31,
-          "as_of": "2026-11-20",
+          "yield": 5.29,
+          "as_of": "2026-11-23",
           "stale": false,
-          "change_1d_bp": -9.0,
-          "change_1w_bp": -16.0,
-          "change_1m_bp": -11.0,
-          "change_3m_bp": 4.0,
+          "change_1d_bp": -2.0,
+          "change_1w_bp": -17.0,
+          "change_1m_bp": -4.0,
+          "change_3m_bp": 6.0,
           "change_1y_bp": 58.0,
-          "percentile_2y": 92.7,
+          "percentile_2y": 91.7,
           "daily_sigma_bp": 4.72,
-          "weekly_sigma_bp": 11.9,
-          "last_gap_days": 1
+          "weekly_sigma_bp": 12.13,
+          "last_gap_days": 3
         }
       },
       "history_curves": {
         "1m": {
-          "as_of": "2026-10-21",
+          "as_of": "2026-10-23",
           "tenors": {
-            "2Y": 4.81,
-            "5Y": 4.95,
-            "10Y": 5.13,
-            "30Y": 5.42
+            "2Y": 4.69,
+            "5Y": 4.82,
+            "10Y": 5.0,
+            "30Y": 5.33
           }
         },
         "1y": {
-          "as_of": "2025-11-20",
+          "as_of": "2025-11-21",
           "tenors": {
-            "2Y": 3.55,
-            "5Y": 3.68,
-            "10Y": 4.1,
-            "30Y": 4.73
+            "2Y": 3.51,
+            "5Y": 3.62,
+            "10Y": 4.06,
+            "30Y": 4.71
           }
         }
       },
       "ten_year_history": [
-        [
-          "2024-10-22",
-          4.2
-        ],
         [
           "2024-10-23",
           4.24
@@ -4359,22 +4355,26 @@
         [
           "2026-11-20",
           4.92
+        ],
+        [
+          "2026-11-23",
+          4.92
         ]
       ],
       "term_structure": {
         "spread_10y_2y_bp": 29.0,
-        "spread_30y_10y_bp": 39.0,
-        "spread_10y_5y_bp": 21.0,
+        "spread_30y_10y_bp": 37.0,
+        "spread_10y_5y_bp": 18.0,
         "shape": "normal",
         "inverted": false
       },
       "temperature": {
-        "score": 63.3,
+        "score": 67.1,
         "level": "warm",
         "components": {
-          "level_percentile": 92.0,
+          "level_percentile": 91.8,
           "curve_slope": 43.0,
-          "momentum_1m": 29.0,
+          "momentum_1m": 42.0,
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
@@ -4386,90 +4386,86 @@
       "currency": "JPY",
       "source": "日本财务省 (MOF)",
       "source_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/",
-      "as_of": "2026-11-19",
+      "as_of": "2026-11-20",
       "tenors": {
         "2Y": {
-          "yield": 1.853,
-          "as_of": "2026-11-19",
+          "yield": 1.826,
+          "as_of": "2026-11-20",
           "stale": false,
-          "change_1d_bp": -1.9,
-          "change_1w_bp": -0.4,
-          "change_1m_bp": -5.6,
-          "change_3m_bp": 17.1,
-          "change_1y_bp": 91.9,
-          "percentile_2y": 92.5,
-          "daily_sigma_bp": 2.92,
-          "weekly_sigma_bp": 6.41,
+          "change_1d_bp": -2.7,
+          "change_1w_bp": -5.6,
+          "change_1m_bp": -8.8,
+          "change_3m_bp": 14.4,
+          "change_1y_bp": 86.1,
+          "percentile_2y": 90.5,
+          "daily_sigma_bp": 2.94,
+          "weekly_sigma_bp": 6.47,
           "last_gap_days": 1
         },
         "5Y": {
-          "yield": 2.235,
-          "as_of": "2026-11-19",
+          "yield": 2.198,
+          "as_of": "2026-11-20",
           "stale": false,
-          "change_1d_bp": -3.3,
-          "change_1w_bp": 2.6,
-          "change_1m_bp": -7.8,
-          "change_3m_bp": 10.8,
-          "change_1y_bp": 96.0,
-          "percentile_2y": 90.9,
-          "daily_sigma_bp": 3.7,
-          "weekly_sigma_bp": 8.02,
+          "change_1d_bp": -3.7,
+          "change_1w_bp": -6.4,
+          "change_1m_bp": -11.1,
+          "change_3m_bp": 5.2,
+          "change_1y_bp": 86.3,
+          "percentile_2y": 89.7,
+          "daily_sigma_bp": 3.72,
+          "weekly_sigma_bp": 8.08,
           "last_gap_days": 1
         },
         "10Y": {
-          "yield": 2.87,
-          "as_of": "2026-11-19",
+          "yield": 2.838,
+          "as_of": "2026-11-20",
           "stale": false,
-          "change_1d_bp": -4.6,
-          "change_1w_bp": 2.9,
-          "change_1m_bp": -5.7,
-          "change_3m_bp": 1.6,
-          "change_1y_bp": 109.1,
-          "percentile_2y": 89.9,
+          "change_1d_bp": -3.2,
+          "change_1w_bp": -6.1,
+          "change_1m_bp": -8.5,
+          "change_3m_bp": -4.4,
+          "change_1y_bp": 101.4,
+          "percentile_2y": 87.9,
           "daily_sigma_bp": 3.76,
-          "weekly_sigma_bp": 8.61,
+          "weekly_sigma_bp": 8.65,
           "last_gap_days": 1
         },
         "30Y": {
-          "yield": 4.03,
-          "as_of": "2026-11-19",
+          "yield": 4.014,
+          "as_of": "2026-11-20",
           "stale": false,
-          "change_1d_bp": -5.2,
-          "change_1w_bp": 5.6,
-          "change_1m_bp": 3.8,
-          "change_3m_bp": 3.5,
-          "change_1y_bp": 72.2,
-          "percentile_2y": 92.5,
-          "daily_sigma_bp": 3.53,
-          "weekly_sigma_bp": 8.09,
+          "change_1d_bp": -1.6,
+          "change_1w_bp": -2.4,
+          "change_1m_bp": 3.4,
+          "change_3m_bp": -2.8,
+          "change_1y_bp": 68.0,
+          "percentile_2y": 91.7,
+          "daily_sigma_bp": 3.49,
+          "weekly_sigma_bp": 8.08,
           "last_gap_days": 1
         }
       },
       "history_curves": {
         "1m": {
-          "as_of": "2026-10-20",
+          "as_of": "2026-10-21",
           "tenors": {
-            "2Y": 1.909,
-            "5Y": 2.313,
-            "10Y": 2.927,
-            "30Y": 3.992
+            "2Y": 1.914,
+            "5Y": 2.309,
+            "10Y": 2.923,
+            "30Y": 3.98
           }
         },
         "1y": {
-          "as_of": "2025-11-19",
+          "as_of": "2025-11-20",
           "tenors": {
-            "2Y": 0.934,
-            "5Y": 1.275,
-            "10Y": 1.779,
-            "30Y": 3.308
+            "2Y": 0.965,
+            "5Y": 1.335,
+            "10Y": 1.824,
+            "30Y": 3.334
           }
         }
       },
       "ten_year_history": [
-        [
-          "2024-10-01",
-          0.894
-        ],
         [
           "2024-10-02",
           0.859
@@ -6545,45 +6541,45 @@
         [
           "2026-11-19",
           2.87
+        ],
+        [
+          "2026-11-20",
+          2.838
         ]
       ],
       "term_structure": {
-        "spread_10y_2y_bp": 101.7,
-        "spread_30y_10y_bp": 116.0,
-        "spread_10y_5y_bp": 63.5,
+        "spread_10y_2y_bp": 101.2,
+        "spread_30y_10y_bp": 117.6,
+        "spread_10y_5y_bp": 64.0,
         "shape": "steep",
         "inverted": false
       },
       "temperature": {
-        "score": 72.5,
+        "score": 70.8,
         "level": "warm",
         "components": {
-          "level_percentile": 91.5,
-          "curve_slope": 67.2,
-          "momentum_1m": 44.3,
+          "level_percentile": 90.0,
+          "curve_slope": 67.1,
+          "momentum_1m": 41.5,
           "formula": "50% 收益率分位 + 20% 曲线斜率 + 30% 一个月动量"
         }
       },
-      "new_observations": 0
+      "new_observations": 1
     }
   },
   "cross_spreads": {
     "CN10Y_US10Y": {
       "label": "中美 10Y 利差",
       "tenor": "10Y",
-      "as_of": "2026-11-20",
-      "spread_bp": -334.0,
-      "change_1d_bp": 12.5,
-      "change_1w_bp": 19.8,
-      "change_1m_bp": 14.9,
-      "change_1y_bp": -105.3,
-      "percentile_2y": 5.4,
+      "as_of": "2026-11-23",
+      "spread_bp": -333.4,
+      "change_1d_bp": 0.6,
+      "change_1w_bp": 15.8,
+      "change_1m_bp": 2.6,
+      "change_1y_bp": -109.1,
+      "percentile_2y": 5.6,
       "daily_sigma_bp": 5.71,
       "history": [
-        [
-          "2024-08-23",
-          -165.5
-        ],
         [
           "2024-08-26",
           -165.7
@@ -8659,25 +8655,25 @@
         [
           "2026-11-20",
           -334.0
+        ],
+        [
+          "2026-11-23",
+          -333.4
         ]
       ]
     },
     "JP10Y_US10Y": {
       "label": "日美 10Y 利差",
       "tenor": "10Y",
-      "as_of": "2026-11-19",
-      "spread_bp": -217.0,
-      "change_1d_bp": -1.6,
-      "change_1w_bp": 8.9,
-      "change_1m_bp": 2.3,
-      "change_1y_bp": 18.1,
-      "percentile_2y": 60.7,
-      "daily_sigma_bp": 5.32,
+      "as_of": "2026-11-20",
+      "spread_bp": -208.2,
+      "change_1d_bp": 8.8,
+      "change_1w_bp": 16.9,
+      "change_1m_bp": 12.5,
+      "change_1y_bp": 19.4,
+      "percentile_2y": 66.3,
+      "daily_sigma_bp": 5.45,
       "history": [
-        [
-          "2024-08-29",
-          -295.3
-        ],
         [
           "2024-08-30",
           -298.8
@@ -10753,25 +10749,25 @@
         [
           "2026-11-19",
           -217.0
+        ],
+        [
+          "2026-11-20",
+          -208.2
         ]
       ]
     },
     "CN10Y_JP10Y": {
       "label": "中日 10Y 利差",
       "tenor": "10Y",
-      "as_of": "2026-11-19",
-      "spread_bp": -129.5,
-      "change_1d_bp": 3.2,
-      "change_1w_bp": -5.7,
-      "change_1m_bp": -0.3,
-      "change_1y_bp": -133.3,
-      "percentile_2y": 4.2,
-      "daily_sigma_bp": 3.92,
+      "as_of": "2026-11-20",
+      "spread_bp": -125.8,
+      "change_1d_bp": 3.7,
+      "change_1w_bp": 2.9,
+      "change_1m_bp": 2.4,
+      "change_1y_bp": -124.7,
+      "percentile_2y": 5.8,
+      "daily_sigma_bp": 3.93,
       "history": [
-        [
-          "2024-08-07",
-          124.2
-        ],
         [
           "2024-08-08",
           132.6
@@ -12847,25 +12843,25 @@
         [
           "2026-11-19",
           -129.5
+        ],
+        [
+          "2026-11-20",
+          -125.8
         ]
       ]
     },
     "CN2Y_US2Y": {
       "label": "中美 2Y 利差",
       "tenor": "2Y",
-      "as_of": "2026-11-20",
-      "spread_bp": -339.7,
-      "change_1d_bp": 13.5,
-      "change_1w_bp": 25.1,
-      "change_1m_bp": 16.3,
-      "change_1y_bp": -127.6,
-      "percentile_2y": 6.7,
+      "as_of": "2026-11-23",
+      "spread_bp": -339.5,
+      "change_1d_bp": 0.2,
+      "change_1w_bp": 19.5,
+      "change_1m_bp": 5.0,
+      "change_1y_bp": -131.5,
+      "percentile_2y": 6.9,
       "daily_sigma_bp": 6.51,
       "history": [
-        [
-          "2024-08-23",
-          -232.4
-        ],
         [
           "2024-08-26",
           -235.6
@@ -14941,66 +14937,15 @@
         [
           "2026-11-20",
           -339.7
+        ],
+        [
+          "2026-11-23",
+          -339.5
         ]
       ]
     }
   },
   "alerts": [
-    {
-      "severity": "high",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 5Y",
-      "value_bp": -15.0,
-      "sigma_bp": 6.37,
-      "sigma_multiple": 2.4,
-      "trigger": "both",
-      "message": "美国国债 5Y 单日下行 15.0bp（2.4σ，超绝对阈值），至 4.710%"
-    },
-    {
-      "severity": "medium",
-      "market": "CROSS",
-      "kind": "spread_move",
-      "metric": "CN2Y_US2Y",
-      "value_bp": 13.5,
-      "sigma_bp": 6.51,
-      "sigma_multiple": 2.1,
-      "trigger": "sigma",
-      "message": "中美 2Y 利差单日走阔 13.5bp（2.1σ），至 -339.7bp"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 2Y",
-      "value_bp": -13.0,
-      "sigma_bp": 6.55,
-      "sigma_multiple": 2.0,
-      "trigger": "sigma",
-      "message": "美国国债 2Y 单日下行 13.0bp（2.0σ），至 4.630%"
-    },
-    {
-      "severity": "medium",
-      "market": "CROSS",
-      "kind": "spread_move",
-      "metric": "CN10Y_US10Y",
-      "value_bp": 12.5,
-      "sigma_bp": 5.71,
-      "sigma_multiple": 2.2,
-      "trigger": "sigma",
-      "message": "中美 10Y 利差单日走阔 12.5bp（2.2σ），至 -334.0bp"
-    },
-    {
-      "severity": "medium",
-      "market": "US",
-      "kind": "daily_move",
-      "metric": "US 10Y",
-      "value_bp": -12.0,
-      "sigma_bp": 5.64,
-      "sigma_multiple": 2.1,
-      "trigger": "sigma",
-      "message": "美国国债 10Y 单日下行 12.0bp（2.1σ），至 4.920%"
-    },
     {
       "severity": "medium",
       "market": "JP",
@@ -15008,7 +14953,7 @@
       "metric": "JP 数据",
       "value_bp": null,
       "age_days": 4,
-      "message": "日本国债最新数据为 2026-11-19,已 4 天未更新,疑似数据源中断而非市场休市"
+      "message": "日本国债最新数据为 2026-11-20,已 4 天未更新,疑似数据源中断而非市场休市"
     }
   ],
   "alert_rules": {
@@ -15028,15 +14973,15 @@
   "insight": {
     "headline": "三国主权收益率曲线与跨国利差监控。",
     "drivers": [
-      "中国国债 10Y 1.586%（+0.6bp）",
-      "美国国债 10Y 4.920%（-12.0bp）",
-      "日本国债 10Y 2.870%（-4.6bp）",
-      "中美 10Y 利差 -334.0bp（中债低于美债）"
+      "中国国债 10Y 1.585%（-0.1bp）",
+      "美国国债 10Y 4.920%（+0.0bp）",
+      "日本国债 10Y 2.838%（-3.2bp）",
+      "中美 10Y 利差 -333.4bp（中债低于美债）"
     ]
   },
   "us_crosscheck": {
     "status": "ok",
-    "as_of": "2026-11-19",
+    "as_of": "2026-11-20",
     "diff_bp": {
       "2Y": 0.0,
       "5Y": 0.0,
@@ -15044,16 +14989,16 @@
       "30Y": 0.0
     },
     "max_abs_diff_bp": 0.0,
-    "note": "两源在 2026-11-19 一致（最大差异 0.0bp）"
+    "note": "两源在 2026-11-20 一致（最大差异 0.0bp）"
   },
   "data_quality": {
     "status": "degraded",
     "failures": [],
     "stale_markets": [],
     "observation_counts": {
-      "CN": 2501,
-      "US": 2502,
-      "JP": 2440
+      "CN": 2499,
+      "US": 2501,
+      "JP": 2439
     },
     "fetch_mode": "incremental",
     "fetch_mode_reason": "缓存充足，仅取增量",
