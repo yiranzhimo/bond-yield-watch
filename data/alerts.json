@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T19:28:07.835687+00:00",
+  "generated_at": "2026-11-25T18:36:32.804893+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
@@ -14,15 +14,5 @@
     "stale_warn_days": 4,
     "stale_high_days": 8
   },
-  "alerts": [
-    {
-      "severity": "medium",
-      "market": "JP",
-      "kind": "stale_data",
-      "metric": "JP 数据",
-      "value_bp": null,
-      "age_days": 4,
-      "message": "日本国债最新数据为 2026-11-20,已 4 天未更新,疑似数据源中断而非市场休市"
-    }
-  ]
+  "alerts": []
 }
