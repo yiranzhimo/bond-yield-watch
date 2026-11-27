@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T18:21:26.758826+00:00",
+  "generated_at": "2026-11-27T18:06:26.587598+00:00",
   "rules": {
     "sigma_window_days": 60,
     "daily_sigma": 2.0,
